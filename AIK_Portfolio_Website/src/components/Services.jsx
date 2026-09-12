@@ -45,7 +45,20 @@ export const Services = () => {
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-[#111111]" id="services">
+    <section className="py-24 md:py-32 bg-[#111111] overflow-hidden" id="services">
+      
+      {/* Dynamic Infinite Marquee */}
+      <div className="relative w-full flex whitespace-nowrap opacity-10 pointer-events-none mb-24 md:mb-32">
+        <div className="animate-marquee flex gap-8 whitespace-nowrap">
+          <span className="font-serif text-[4rem] md:text-[6rem] lg:text-[8rem] text-white italic tracking-tighter">
+            FRONT-END ENGINEERING — UI/UX DESIGN — ACCESSIBLE INTERFACES — PERFORMANCE OPTIMIZATION —
+          </span>
+          <span className="font-serif text-[4rem] md:text-[6rem] lg:text-[8rem] text-white italic tracking-tighter">
+            FRONT-END ENGINEERING — UI/UX DESIGN — ACCESSIBLE INTERFACES — PERFORMANCE OPTIMIZATION —
+          </span>
+        </div>
+      </div>
+
       <div className="container mx-auto px-6 max-w-7xl">
         
         <div className="mb-20 reveal" ref={revealRef}>

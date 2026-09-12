@@ -4,6 +4,7 @@ import { Home } from './pages/Home';
 import { Resume } from './pages/Resume';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { CustomCursor } from './components/CustomCursor';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -16,6 +17,7 @@ const ScrollToTop = () => {
 function App() {
   return (
     <ThemeProvider>
+      <CustomCursor />
       <Router>
         <ScrollToTop />
         <Routes>

@@ -1,22 +1,23 @@
 import { useReveal } from '../hooks/useReveal';
+import { useTilt } from '../hooks/useTilt';
 import { ExternalLink } from 'lucide-react';
 
 const projectsData = [
   {
     id: 1,
+    title: "MAPS Architects",
+    description: "An official portfolio website for MAPS Architects, highlighting their high-end residential and commercial architectural projects with a highly visual, masonry-style gallery.",
+    tech: ["Architecture", "Portfolio", "Web Design"],
+    link: "https://mapsarchitects.in/",
+    image: "/assets/images/project-maps-architects.png"
+  },
+  {
+    id: 2,
     title: "The Aspire Hotel",
     description: "The official website for The Aspire Hotel in Guwahati, showcasing luxurious modern rooms, amenities, and a smooth booking-focused hospitality experience.",
     tech: ["Hospitality", "Hotel Website", "Booking UX"],
     link: "https://theaspirehotel.com/",
     image: "/assets/images/project-aspire-hotel-slider2.jpeg"
-  },
-  {
-    id: 2,
-    title: "Aaron Holmes Residential",
-    description: "A luxury real estate platform for London and UK property experts with dynamic listings, advanced search filters, and market intelligence reports.",
-    tech: ["PHP", "UI/UX", "Real Estate Tech"],
-    link: "https://aaron-holmes.com/design/index.php?page=home",
-    image: "/assets/images/project-aaron-holmes.jpeg"
   },
   {
     id: 3,
@@ -28,16 +29,17 @@ const projectsData = [
   },
   {
     id: 4,
-    title: "MAPS Architects",
-    description: "An official portfolio website for MAPS Architects, highlighting their high-end residential and commercial architectural projects with a highly visual, masonry-style gallery.",
-    tech: ["Architecture", "Portfolio", "Web Design"],
-    link: "https://mapsarchitects.in/",
-    image: "/assets/images/project-maps-architects.png"
+    title: "Aaron Holmes Residential",
+    description: "A luxury real estate platform for London and UK property experts with dynamic listings, advanced search filters, and market intelligence reports.",
+    tech: ["PHP", "UI/UX", "Real Estate Tech"],
+    link: "https://aaron-holmes.com/design/index.php?page=home",
+    image: "/assets/images/project-aaron-holmes.jpeg"
   }
 ];
 
 const ProjectGalleryCard = ({ project, index }) => {
   const projectRef = useReveal();
+  const tiltRef = useTilt({ max: 8, scale: 1.01 });
   
   return (
     <article 
@@ -48,9 +50,10 @@ const ProjectGalleryCard = ({ project, index }) => {
         href={project.link} 
         target="_blank" 
         rel="noopener noreferrer"
-        className="block relative w-full overflow-hidden bg-[#f0f0f0] mb-6"
+        className="block relative w-full overflow-visible mb-6"
+        ref={tiltRef}
       >
-        <div className="relative w-full aspect-[4/3] overflow-hidden">
+        <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#f0f0f0] shadow-xl">
           <img 
             src={project.image} 
             alt={project.title}
@@ -70,18 +73,30 @@ const ProjectGalleryCard = ({ project, index }) => {
         </div>
       </a>
       
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-start gap-4">
-          <h3 className="font-serif text-2xl md:text-3xl text-[#111111] tracking-tight group-hover:opacity-70 transition-opacity">
+      <div className="flex flex-col flex-grow pt-8 gap-6">
+        <div className="flex flex-col gap-3">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[#111111]/40">
+            Project — 0{index + 1}
+          </span>
+          <h3 className="font-serif text-3xl md:text-4xl text-[#111111] tracking-tight group-hover:opacity-70 transition-opacity">
             {project.title}
           </h3>
-          <span className="text-xs font-bold tracking-widest uppercase text-[#111111]/40 mt-2 shrink-0">
-            0{index + 1}
-          </span>
         </div>
-        <p className="text-xs font-bold tracking-widest uppercase text-[#111111]/60">
-          {project.tech.slice(0, 2).join(' — ')}
+        
+        <p className="text-[#111111]/70 font-light leading-relaxed text-base md:text-lg max-w-xl">
+          {project.description}
         </p>
+
+        <div className="flex flex-wrap gap-2 mt-2">
+          {project.tech.map((t, i) => (
+            <span 
+              key={i} 
+              className="px-4 py-2 text-[10px] font-bold tracking-widest uppercase text-[#111111]/60 border border-[#111111]/10 rounded-full"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
       </div>
     </article>
   );
