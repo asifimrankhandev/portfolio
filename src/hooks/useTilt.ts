@@ -1,40 +1,43 @@
 import { useEffect, useRef } from 'react';
 
-export const useTilt = (settings = {}) => {
-  const ref = useRef(null);
-  
+interface TiltSettings {
+  max?: number;
+  perspective?: number;
+  scale?: number;
+  speed?: number;
+}
+
+export const useTilt = (settings: TiltSettings = {}) => {
+  const ref = useRef<HTMLElement | null>(null);
+
   const defaultSettings = {
     max: 15,
     perspective: 1000,
     scale: 1.02,
     speed: 1000,
-    ...settings
+    ...settings,
   };
 
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-    
-    // Disable on touch devices
+
     const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
     if (isTouchDevice) return;
 
-    let transitionTimeout;
-
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       const { left, top, width, height } = element.getBoundingClientRect();
-      const x = (e.clientX - left) / width; // 0 to 1
-      const y = (e.clientY - top) / height; // 0 to 1
-      
-      const tiltX = (defaultSettings.max / 2) - (x * defaultSettings.max);
-      const tiltY = (y * defaultSettings.max) - (defaultSettings.max / 2);
-      
+      const x = (e.clientX - left) / width;
+      const y = (e.clientY - top) / height;
+
+      const tiltX = defaultSettings.max / 2 - x * defaultSettings.max;
+      const tiltY = y * defaultSettings.max - defaultSettings.max / 2;
+
       element.style.transform = `perspective(${defaultSettings.perspective}px) rotateX(${tiltY}deg) rotateY(${-tiltX}deg) scale3d(${defaultSettings.scale}, ${defaultSettings.scale}, ${defaultSettings.scale})`;
     };
 
     const handleMouseEnter = () => {
       element.style.transition = 'none';
-      clearTimeout(transitionTimeout);
     };
 
     const handleMouseLeave = () => {

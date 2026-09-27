@@ -1,16 +1,33 @@
-# React + Vite
+# Asif Imran Khan — Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Personal front-end developer portfolio, built with [Astro](https://astro.build) + React islands and TypeScript.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Astro** — static-first rendering; content sections ship zero JS.
+- **React** (`@astrojs/react`) — used only for genuinely interactive widgets (header/mobile nav, command palette, project filter, services accordion, contact form) as isolated islands.
+- **TypeScript** — `astro/tsconfigs/strict`, enforced at build time via `astro check`.
+- **Tailwind CSS v4** — via `@tailwindcss/vite`, with design tokens in `src/styles/global.css`.
 
-## React Compiler
+## Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+src/
+  components/astro/   # static, zero-JS sections (Hero, About, Experience, Footer)
+  components/react/   # hydrated islands (Header, CommandPalette, Projects, Services, Contact, CustomCursor)
+  data/               # typed content (projects, services, experience)
+  lib/                # framework-agnostic modules (theme, scroll-reveal)
+  hooks/              # React hooks used only inside islands
+  layouts/            # BaseLayout.astro (head, fonts, theme init)
+  pages/              # file-based routes (index, resume, 404)
+  styles/             # global.css design tokens
+```
 
-## Expanding the Oxlint configuration
+## Scripts
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+```bash
+npm run dev       # start the dev server
+npm run build     # type-check (astro check) then build
+npm run preview   # preview the production build
+npm run lint      # oxlint
+```

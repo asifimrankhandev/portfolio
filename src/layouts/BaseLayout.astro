@@ -1,0 +1,114 @@
+---
+import { CustomCursor } from '@/components/react/CustomCursor';
+import CommandPalette from '@/components/react/CommandPalette';
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = 'Asif Imran Khan | Front-End Developer',
+  description = 'Front-end developer building accessible, performant React interfaces and responsive websites. Explore projects, experience, and ways to contact Asif Imran Khan.',
+  noindex = false,
+} = Astro.props;
+
+const siteDescription = 'Front-end developer building accessible, performant React interfaces and responsive websites. Explore projects, experience, and ways to contact Asif Imran Khan.';
+const siteUrl = Astro.site;
+const canonicalUrl = siteUrl && !noindex ? new URL(Astro.url.pathname, siteUrl).href : undefined;
+const socialImageUrl = siteUrl ? new URL('/assets/images/profile-optimized.webp', siteUrl).href : undefined;
+const structuredData = siteUrl && !noindex
+  ? {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Person',
+          '@id': `${siteUrl.href}#person`,
+          name: 'Asif Imran Khan',
+          jobTitle: 'Front-End Developer',
+          url: siteUrl.href,
+          image: socialImageUrl,
+          email: 'mailto:imran@idexa.app',
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: 'Bangalore',
+            addressCountry: 'IN',
+          },
+          sameAs: [
+            'https://github.com/techyaik',
+            'https://www.linkedin.com/in/asif-imran-khan-50b170218',
+            'https://x.com/asifikhandev',
+          ],
+          knowsAbout: ['Front-end development', 'React', 'JavaScript', 'HTML', 'CSS', 'Tailwind CSS', 'PHP', 'Web accessibility'],
+        },
+        {
+          '@type': 'WebSite',
+          '@id': `${siteUrl.href}#website`,
+          url: siteUrl.href,
+          name: 'Asif Imran Khan | Front-End Developer',
+          description: siteDescription,
+          inLanguage: 'en-IN',
+          publisher: { '@id': `${siteUrl.href}#person` },
+        },
+      ],
+    }
+  : undefined;
+---
+
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+    <meta name="author" content="Asif Imran Khan" />
+    <meta name="theme-color" content="#100425" />
+    <title>{title}</title>
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:site_name" content="Asif Imran Khan | Front-End Developer" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    {socialImageUrl && <meta property="og:image" content={socialImageUrl} />}
+    {socialImageUrl && <meta property="og:image:alt" content="Portrait of Asif Imran Khan" />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {socialImageUrl && <meta name="twitter:image" content={socialImageUrl} />}
+    <meta name="twitter:creator" content="@asifikhandev" />
+    {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Josefin+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <CustomCursor client:only="react" />
+    <CommandPalette client:idle />
+    <slot />
+
+    <script>
+      import { initRevealObserver } from '@/lib/reveal';
+
+      initRevealObserver();
+    </script>
+  </body>
+</html>
