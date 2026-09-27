@@ -53,6 +53,11 @@
     font-family: var(--font-display);
   }
 
+  html.has-custom-cursor,
+  html.has-custom-cursor * {
+    cursor: none !important;
+  }
+
   body {
     @apply antialiased font-sans;
     color: var(--color-ink-base);

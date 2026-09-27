@@ -1,0 +1,105 @@
+<dialog data-command-dialog aria-label="Global command menu" class="command-dialog fixed z-[2001] w-[calc(100%-2rem)] max-w-[640px] overflow-hidden rounded-2xl border border-line bg-surface p-0 font-sans text-ink shadow-2xl backdrop:bg-ink/50 backdrop:backdrop-blur-sm">
+  <div class="flex items-center border-b border-line px-4">
+    <svg class="size-5 shrink-0 text-ink-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>
+    <input data-command-search type="search" aria-label="Search commands" placeholder="Type a command or search..." class="min-w-0 flex-1 bg-transparent px-3 py-4 text-ink outline-none placeholder:text-ink-muted" />
+    <kbd class="hidden items-center gap-1 rounded bg-surface-muted px-2 py-1 font-mono text-xs font-medium text-ink-muted sm:inline-flex">ESC</kbd>
+  </div>
+  <div data-command-list class="max-h-[300px] overflow-y-auto scroll-smooth p-2">
+    <section data-command-group aria-label="Navigation" class="mb-2">
+      <h2 class="px-2 py-1.5 text-xs font-semibold uppercase tracking-wider text-ink-muted">Navigation</h2>
+      <button data-command-item data-label="Home" data-section="home" class="command-item"><span aria-hidden="true">⌂</span>Home</button>
+      <button data-command-item data-label="About" data-section="about" class="command-item"><span aria-hidden="true">◎</span>About</button>
+      <button data-command-item data-label="Selected Work Projects" data-section="projects" class="command-item"><span aria-hidden="true">▧</span>Selected Work</button>
+      <button data-command-item data-label="Contact" data-section="contact" class="command-item"><span aria-hidden="true">✉</span>Contact</button>
+      <a data-command-link data-label="View Resume" href="/resume" class="command-item"><span aria-hidden="true">▤</span>View Resume</a>
+    </section>
+    <section data-command-group aria-label="Links">
+      <h2 class="px-2 py-1.5 text-xs font-semibold uppercase tracking-wider text-ink-muted">Links</h2>
+      <a data-command-link data-label="GitHub" href="https://github.com/techyaik" target="_blank" rel="noopener noreferrer" class="command-item"><i class="fa-brands fa-github w-4 text-center" aria-hidden="true"></i>GitHub<span class="ml-auto opacity-50" aria-hidden="true">↗</span></a>
+      <a data-command-link data-label="LinkedIn" href="https://www.linkedin.com/in/asif-imran-khan-50b170218" target="_blank" rel="noopener noreferrer" class="command-item"><i class="fa-brands fa-linkedin-in w-4 text-center" aria-hidden="true"></i>LinkedIn<span class="ml-auto opacity-50" aria-hidden="true">↗</span></a>
+      <a data-command-link data-label="Twitter X" href="https://x.com/asifikhandev?s=11" target="_blank" rel="noopener noreferrer" class="command-item"><i class="fa-brands fa-x-twitter w-4 text-center" aria-hidden="true"></i>Twitter<span class="ml-auto opacity-50" aria-hidden="true">↗</span></a>
+    </section>
+    <p data-command-empty hidden class="py-6 text-center text-sm text-ink-muted">No results found.</p>
+  </div>
+</dialog>
+
+<script>
+  const commandDialog = document.querySelector<HTMLDialogElement>('[data-command-dialog]');
+  const commandSearch = commandDialog?.querySelector<HTMLInputElement>('[data-command-search]');
+  const commandItems = [...(commandDialog?.querySelectorAll<HTMLElement>('[data-command-item], [data-command-link]') ?? [])];
+  const commandEmpty = commandDialog?.querySelector<HTMLElement>('[data-command-empty]');
+  let lastFocused: HTMLElement | null = null;
+
+  const openCommands = () => {
+    if (!commandDialog || commandDialog.open) return;
+    lastFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    commandDialog.showModal();
+    commandSearch?.focus();
+  };
+  const closeCommands = () => {
+    if (!commandDialog?.open) return;
+    commandDialog.close();
+    lastFocused?.focus();
+  };
+
+  document.addEventListener('keydown', (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      if (commandDialog?.open) closeCommands();
+      else openCommands();
+    }
+  });
+  commandDialog?.addEventListener('click', (event) => {
+    if (event.target === commandDialog) closeCommands();
+  });
+  commandSearch?.addEventListener('input', () => {
+    const query = commandSearch.value.trim().toLowerCase();
+    let visibleCount = 0;
+    commandItems.forEach((item) => {
+      const visible = (item.dataset.label ?? item.textContent ?? '').toLowerCase().includes(query);
+      item.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    commandDialog?.querySelectorAll<HTMLElement>('[data-command-group]').forEach((group) => {
+      group.hidden = !group.querySelector('[data-command-item]:not([hidden]), [data-command-link]:not([hidden])');
+    });
+    if (commandEmpty) commandEmpty.hidden = visibleCount > 0;
+  });
+  commandDialog?.querySelectorAll<HTMLButtonElement>('[data-command-item]').forEach((button) => button.addEventListener('click', () => {
+    const section = button.dataset.section;
+    closeCommands();
+    if (!section) return;
+    if (window.location.pathname !== '/') {
+      window.location.assign(`/#${section}`);
+      return;
+    }
+    if (section === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
+    else document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' });
+  }));
+  commandDialog?.querySelectorAll<HTMLAnchorElement>('[data-command-link]').forEach((link) => link.addEventListener('click', closeCommands));
+</script>
+
+<style>
+  .command-dialog:not([open]) { display: none; }
+  .command-dialog [hidden] { display: none !important; }
+  .command-dialog[open] { top: 15vh; left: 50%; margin: 0; transform: translateX(-50%); }
+  @media (min-width: 640px) {
+    .command-dialog[open] { top: 20vh; }
+  }
+  .command-item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: .75rem;
+    border-radius: .5rem;
+    padding: .5rem .75rem;
+    color: inherit;
+    font-size: .875rem;
+    text-align: left;
+    cursor: pointer;
+  }
+  .command-item:hover, .command-item:focus-visible {
+    background: var(--color-surface-subtle);
+    outline: none;
+  }
+</style>

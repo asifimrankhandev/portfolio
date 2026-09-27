@@ -1,6 +1,6 @@
 ---
-import { CustomCursor } from '@/components/react/CustomCursor';
-import CommandPalette from '@/components/react/CommandPalette';
+import CustomCursor from '@/components/astro/CustomCursor.astro';
+import CommandPalette from '@/components/astro/CommandPalette.astro';
 import '@/styles/global.css';
 
 interface Props {
@@ -101,8 +101,8 @@ const structuredData = siteUrl && !noindex
     />
   </head>
   <body>
-    <CustomCursor client:only="react" />
-    <CommandPalette client:idle />
+    <CustomCursor />
+    <CommandPalette />
     <slot />
 
     <script>

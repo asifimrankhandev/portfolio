@@ -1,7 +1,3 @@
----
-import { Contact } from '@/components/react/Contact';
----
-
 <section class="py-24 md:py-32 bg-canvas" id="contact">
   <div class="container mx-auto px-6 max-w-4xl">
 
@@ -16,7 +12,119 @@ import { Contact } from '@/components/react/Contact';
     </div>
 
     <div class="reveal" data-reveal>
-      <Contact client:visible />
+      <div class="grid grid-cols-1 items-start gap-16 lg:grid-cols-5">
+        <div class="order-2 flex flex-col gap-10 lg:order-1 lg:col-span-2">
+          <div>
+            <h3 class="mb-6 border-b border-line pb-4 text-xs font-bold uppercase tracking-widest text-ink">Direct Inquiry</h3>
+            <div class="flex flex-col gap-4">
+              <a href="mailto:imran@idexa.app" class="inline-flex items-center gap-3 break-all text-xl font-bold text-ink transition-opacity hover:opacity-70 md:text-2xl"><i class="fa-solid fa-envelope w-5 shrink-0 opacity-50" aria-hidden="true"></i> imran@idexa.app</a>
+              <button type="button" data-copy-email class="inline-flex items-center gap-2 text-left text-xs font-bold uppercase tracking-widest text-ink-muted transition-colors hover:text-ink">
+                <i data-copy-icon class="fa-regular fa-copy" aria-hidden="true"></i><span data-copy-label>Copy Email Address</span>
+              </button>
+            </div>
+          </div>
+          <div>
+            <h3 class="mb-6 border-b border-line pb-4 text-xs font-bold uppercase tracking-widest text-ink">Social</h3>
+            <div class="flex flex-col gap-3">
+              <a href="https://github.com/techyaik" target="_blank" rel="noopener noreferrer" class="pill pill-outline w-fit">GitHub <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-50" aria-hidden="true"></i></a>
+              <a href="https://www.linkedin.com/in/asif-imran-khan-50b170218" target="_blank" rel="noopener noreferrer" class="pill pill-outline w-fit">LinkedIn <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-50" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative order-1 lg:order-2 lg:col-span-3">
+          <div data-contact-success class="absolute inset-0 z-10 hidden flex-col justify-center bg-canvas py-12" role="status" aria-live="polite">
+            <h3 class="mb-4 text-3xl font-black uppercase text-ink">Message Sent</h3>
+            <p class="ds-copy mb-8 text-lg">Thank you for reaching out. I’ll get back to you as soon as possible.</p>
+            <button type="button" data-send-another class="pill pill-outline self-start">Send another message</button>
+          </div>
+          <form data-contact-form class="space-y-6" action="https://formsubmit.co/ajax/imran@idexa.app" method="POST">
+            <p data-contact-error role="alert" class="hidden rounded-xl border border-error/30 bg-error/5 px-4 py-3 text-sm font-medium text-error">Something went wrong while sending your message. Please try again or contact me directly by email.</p>
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <label for="name" class="mb-2 block text-xs font-bold uppercase tracking-widest text-ink-muted">Name</label>
+                <input type="text" id="name" name="name" required autocomplete="name" class="w-full rounded-xl border border-line bg-surface-muted px-4 py-3 text-ink transition-colors focus:border-ink focus:outline-none" />
+              </div>
+              <div>
+                <label for="email" class="mb-2 block text-xs font-bold uppercase tracking-widest text-ink-muted">Email</label>
+                <input type="email" id="email" name="email" required autocomplete="email" class="w-full rounded-xl border border-line bg-surface-muted px-4 py-3 text-ink transition-colors focus:border-ink focus:outline-none" />
+              </div>
+            </div>
+            <div>
+              <label for="subject" class="mb-2 block text-xs font-bold uppercase tracking-widest text-ink-muted">Subject</label>
+              <input type="text" id="subject" name="subject" required class="w-full rounded-xl border border-line bg-surface-muted px-4 py-3 text-ink transition-colors focus:border-ink focus:outline-none" />
+            </div>
+            <div>
+              <label for="message" class="mb-2 block text-xs font-bold uppercase tracking-widest text-ink-muted">Message</label>
+              <textarea id="message" name="message" required rows="4" minlength="10" maxlength="2000" class="w-full resize-none rounded-xl border border-line bg-surface-muted px-4 py-3 text-ink transition-colors focus:border-ink focus:outline-none"></textarea>
+            </div>
+            <button data-submit-button type="submit" class="pill pill-solid mt-4"><span data-submit-label>Send Message</span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+<script>
+  const email = 'imran@idexa.app';
+  const copyButton = document.querySelector<HTMLButtonElement>('[data-copy-email]');
+  copyButton?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      const label = copyButton.querySelector('[data-copy-label]');
+      const icon = copyButton.querySelector('[data-copy-icon]');
+      if (label) label.textContent = 'Address Copied';
+      icon?.classList.replace('fa-copy', 'fa-check');
+      window.setTimeout(() => {
+        if (label) label.textContent = 'Copy Email Address';
+        icon?.classList.replace('fa-check', 'fa-copy');
+      }, 2000);
+    } catch {
+      window.location.href = `mailto:${email}`;
+    }
+  });
+
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const success = document.querySelector<HTMLElement>('[data-contact-success]');
+  const error = document.querySelector<HTMLElement>('[data-contact-error]');
+  const submitButton = form?.querySelector<HTMLButtonElement>('[data-submit-button]');
+  const submitLabel = form?.querySelector<HTMLElement>('[data-submit-label]');
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    if (submitButton) submitButton.disabled = true;
+    if (submitLabel) submitLabel.textContent = 'Sending…';
+    error?.classList.add('hidden');
+    try {
+      const formData = new FormData(form);
+      const name = String(formData.get('name') ?? '');
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name,
+          email: formData.get('email'),
+          subject: formData.get('subject'),
+          message: formData.get('message'),
+          _subject: `New Contact from ${name}`,
+          _template: 'box',
+        }),
+      });
+      if (!response.ok) throw new Error('Contact request failed');
+      form.reset();
+      success?.classList.remove('hidden');
+    } catch {
+      error?.classList.remove('hidden');
+    } finally {
+      if (submitButton) submitButton.disabled = false;
+      if (submitLabel) submitLabel.textContent = 'Send Message';
+    }
+  });
+
+  document.querySelector('[data-send-another]')?.addEventListener('click', () => {
+    success?.classList.add('hidden');
+    form?.querySelector<HTMLInputElement>('#name')?.focus();
+  });
+</script>
