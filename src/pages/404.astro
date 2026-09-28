@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
 ---
 
 <BaseLayout
@@ -7,17 +9,17 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   description="The page you requested could not be found. Return to Asif Imran Khan’s front-end developer portfolio."
   noindex
 >
-  <div class="min-h-screen flex flex-col items-center justify-center bg-canvas text-center px-6">
-    <p class="ds-eyebrow mb-6">404</p>
-    <h1 class="font-black uppercase leading-none tracking-tight text-ink text-[2.5rem] md:text-[4rem] mb-6">
-      Page not found
-    </h1>
-    <p class="ds-copy text-lg max-w-md mb-10">
-      The page you're looking for doesn't exist or may have moved.
+  <Header />
+  <main id="main-content" tabindex="-1" class="container-page flex min-h-[70vh] flex-col justify-center py-24 focus-visible:outline-none">
+    <p class="type-label text-ink-muted">404</p>
+    <h1 class="type-display mt-6 max-w-[12ch]">Page not found</h1>
+    <p class="type-lead mt-8 max-w-[40ch] text-ink-muted">
+      The page you’re looking for doesn’t exist or may have moved.
     </p>
-    <div class="flex flex-wrap items-center justify-center gap-3">
-      <a href="/" class="pill pill-solid">Back Home</a>
-      <a href="/#projects" class="pill pill-outline">View Projects</a>
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a href="/" class="btn btn-primary">Back home</a>
+      <a href="/#work" class="btn btn-secondary">View work</a>
     </div>
-  </div>
+  </main>
+  <Footer />
 </BaseLayout>

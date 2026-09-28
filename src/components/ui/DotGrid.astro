@@ -1,0 +1,155 @@
+---
+interface Props {
+  spacing?: number;
+  dotSize?: number;
+  radius?: number;
+  strength?: number;
+  ease?: number;
+  baseOpacity?: number;
+  /** Tailwind text-color class; the dots are drawn in this color. */
+  colorClass?: string;
+  class?: string;
+}
+
+const {
+  spacing = 36,
+  dotSize = 4,
+  radius = 220,
+  strength = 50,
+  ease = 0.15,
+  baseOpacity = 0.18,
+  colorClass = 'text-ink',
+  class: className,
+} = Astro.props;
+---
+
+<canvas
+  data-dot-grid
+  data-spacing={spacing}
+  data-dot-size={dotSize}
+  data-radius={radius}
+  data-strength={strength}
+  data-ease={ease}
+  data-base-opacity={baseOpacity}
+  aria-hidden="true"
+  class:list={['pointer-events-none absolute inset-0 size-full', colorClass, className]}
+></canvas>
+
+<script>
+  import { readElementColor, rgba } from '@/lib/color';
+
+  const SETTLE_THRESHOLD = 0.004;
+  type Dot = { x: number; y: number; dx: number; dy: number; force: number };
+
+  const interactive =
+    window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLCanvasElement>('[data-dot-grid]').forEach((canvas) => {
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    const setting = (key: string) => Number(canvas.dataset[key]);
+    const spacing = setting('spacing');
+    const dotRadius = setting('dotSize') / 2;
+    const radius = setting('radius');
+    const strength = setting('strength');
+    const ease = setting('ease');
+    const baseOpacity = setting('baseOpacity');
+    const color = readElementColor(canvas);
+
+    const pointer = { x: -1e4, y: -1e4 };
+    let dots: Dot[] = [];
+    let width = 0;
+    let height = 0;
+    let frameId = 0;
+
+    const draw = (): boolean => {
+      context.clearRect(0, 0, width, height);
+      let moving = false;
+
+      for (const dot of dots) {
+        const offsetX = dot.x - pointer.x;
+        const offsetY = dot.y - pointer.y;
+        const distance = Math.hypot(offsetX, offsetY);
+        let targetX = 0;
+        let targetY = 0;
+        let targetForce = 0;
+        if (distance < radius) {
+          targetForce = 1 - Math.max(distance, 1e-4) / radius;
+          const angle = Math.atan2(offsetY, offsetX);
+          targetX = Math.cos(angle) * targetForce * strength;
+          targetY = Math.sin(angle) * targetForce * strength;
+        }
+        dot.dx += (targetX - dot.dx) * ease;
+        dot.dy += (targetY - dot.dy) * ease;
+        dot.force += (targetForce - dot.force) * ease;
+        if (Math.abs(dot.dx) > SETTLE_THRESHOLD || Math.abs(dot.dy) > SETTLE_THRESHOLD || dot.force > SETTLE_THRESHOLD) {
+          moving = true;
+        }
+
+        const opacity = baseOpacity + dot.force * (1 - baseOpacity);
+        if (opacity < 0.01) continue;
+        context.beginPath();
+        context.arc(dot.x + dot.dx, dot.y + dot.dy, dotRadius, 0, Math.PI * 2);
+        context.fillStyle = rgba(color, opacity);
+        context.fill();
+      }
+
+      return moving;
+    };
+
+    const layout = () => {
+      const ratio = window.devicePixelRatio || 1;
+      width = canvas.offsetWidth;
+      height = canvas.offsetHeight;
+      if (!width || !height) return;
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+      const columns = Math.floor(width / spacing);
+      const rows = Math.floor(height / spacing);
+      const startX = (width - (columns - 1) * spacing) / 2;
+      const startY = (height - (rows - 1) * spacing) / 2;
+      dots = [];
+      for (let row = 0; row < rows; row += 1) {
+        for (let column = 0; column < columns; column += 1) {
+          dots.push({ x: startX + column * spacing, y: startY + row * spacing, dx: 0, dy: 0, force: 0 });
+        }
+      }
+      draw();
+    };
+
+    const tick = () => {
+      frameId = 0;
+      if (draw()) frameId = requestAnimationFrame(tick);
+    };
+
+    const requestTick = () => {
+      if (!frameId && !document.hidden) frameId = requestAnimationFrame(tick);
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') return;
+      const bounds = canvas.getBoundingClientRect();
+      const x = event.clientX - bounds.left;
+      const y = event.clientY - bounds.top;
+      const near = x > -radius && x < bounds.width + radius && y > -radius && y < bounds.height + radius;
+      pointer.x = near ? x : -1e4;
+      pointer.y = near ? y : -1e4;
+      if (near || dots.some((dot) => dot.force > SETTLE_THRESHOLD)) requestTick();
+    };
+
+    const onPointerLeave = () => {
+      pointer.x = -1e4;
+      pointer.y = -1e4;
+      requestTick();
+    };
+
+    new ResizeObserver(layout).observe(canvas);
+    if (interactive) {
+      window.addEventListener('pointermove', onPointerMove, { passive: true });
+      document.documentElement.addEventListener('pointerleave', onPointerLeave);
+    }
+  });
+</script>

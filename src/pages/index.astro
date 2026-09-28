@@ -1,28 +1,26 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/astro/Header.astro';
-import Hero from '@/components/astro/Hero.astro';
-import About from '@/components/astro/About.astro';
-import ProjectsSection from '@/components/astro/ProjectsSection.astro';
-import Experience from '@/components/astro/Experience.astro';
-import ServicesSection from '@/components/astro/ServicesSection.astro';
-import ContactSection from '@/components/astro/ContactSection.astro';
-import Footer from '@/components/astro/Footer.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import Hero from '@/components/sections/Hero.astro';
+import Work from '@/components/sections/Work.astro';
+import About from '@/components/sections/About.astro';
+import Principles from '@/components/sections/Principles.astro';
+import Process from '@/components/sections/Process.astro';
+import Experience from '@/components/sections/Experience.astro';
+import Contact from '@/components/sections/Contact.astro';
 ---
 
 <BaseLayout>
-  <div class="flex flex-col min-h-screen bg-canvas text-ink font-sans">
-    <main id="main-content" class="flex-grow">
-      <div class="hero-frame relative mx-0 mt-0 rounded-t-[1.5rem] border border-white/20">
-        <Header />
-        <Hero />
-      </div>
-      <About />
-      <ProjectsSection />
-      <Experience />
-      <ServicesSection />
-      <ContactSection />
-    </main>
-    <Footer />
-  </div>
+  <Header />
+  <main id="main-content" tabindex="-1" class="focus-visible:outline-none">
+    <Hero />
+    <Work />
+    <About />
+    <Principles />
+    <Process />
+    <Experience />
+    <Contact />
+  </main>
+  <Footer />
 </BaseLayout>

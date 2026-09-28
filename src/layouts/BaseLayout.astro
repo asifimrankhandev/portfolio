@@ -1,6 +1,8 @@
 ---
-import CustomCursor from '@/components/astro/CustomCursor.astro';
-import CommandPalette from '@/components/astro/CommandPalette.astro';
+import { Font, getImage } from 'astro:assets';
+import CommandPalette from '@/components/layout/CommandPalette.astro';
+import portrait from '@/assets/images/profile.webp';
+import { profile, socialProfiles } from '@/data/profile';
 import '@/styles/global.css';
 
 interface Props {
@@ -9,52 +11,50 @@ interface Props {
   noindex?: boolean;
 }
 
-const {
-  title = 'Asif Imran Khan | Front-End Developer',
-  description = 'Front-end developer building accessible, performant React interfaces and responsive websites. Explore projects, experience, and ways to contact Asif Imran Khan.',
-  noindex = false,
-} = Astro.props;
+const siteTitle = `${profile.name} | ${profile.title}`;
+const siteDescription =
+  'Front-end developer building accessible, performant React interfaces and responsive websites. Explore projects, experience, and ways to contact Asif Imran Khan.';
 
-const siteDescription = 'Front-end developer building accessible, performant React interfaces and responsive websites. Explore projects, experience, and ways to contact Asif Imran Khan.';
+const { title = siteTitle, description = siteDescription, noindex = false } = Astro.props;
+
 const siteUrl = Astro.site;
 const canonicalUrl = siteUrl && !noindex ? new URL(Astro.url.pathname, siteUrl).href : undefined;
-const socialImageUrl = siteUrl ? new URL('/assets/images/profile-optimized.webp', siteUrl).href : undefined;
-const structuredData = siteUrl && !noindex
-  ? {
-      '@context': 'https://schema.org',
-      '@graph': [
-        {
-          '@type': 'Person',
-          '@id': `${siteUrl.href}#person`,
-          name: 'Asif Imran Khan',
-          jobTitle: 'Front-End Developer',
-          url: siteUrl.href,
-          image: socialImageUrl,
-          email: 'mailto:imran@idexa.app',
-          address: {
-            '@type': 'PostalAddress',
-            addressLocality: 'Bangalore',
-            addressCountry: 'IN',
+const socialImage = await getImage({ src: portrait, format: 'jpg', width: portrait.width });
+const socialImageUrl = siteUrl ? new URL(socialImage.src, siteUrl).href : undefined;
+
+const structuredData =
+  siteUrl && !noindex
+    ? {
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'Person',
+            '@id': `${siteUrl.href}#person`,
+            name: profile.name,
+            jobTitle: profile.title,
+            url: siteUrl.href,
+            image: socialImageUrl,
+            email: `mailto:${profile.email}`,
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: profile.location.city,
+              addressCountry: profile.location.countryCode,
+            },
+            sameAs: socialProfiles.map((social) => social.url),
+            knowsAbout: ['Front-end development', 'Web accessibility', ...profile.stack],
           },
-          sameAs: [
-            'https://github.com/techyaik',
-            'https://www.linkedin.com/in/asif-imran-khan-50b170218',
-            'https://x.com/asifikhandev',
-          ],
-          knowsAbout: ['Front-end development', 'React', 'JavaScript', 'HTML', 'CSS', 'Tailwind CSS', 'PHP', 'Web accessibility'],
-        },
-        {
-          '@type': 'WebSite',
-          '@id': `${siteUrl.href}#website`,
-          url: siteUrl.href,
-          name: 'Asif Imran Khan | Front-End Developer',
-          description: siteDescription,
-          inLanguage: 'en-IN',
-          publisher: { '@id': `${siteUrl.href}#person` },
-        },
-      ],
-    }
-  : undefined;
+          {
+            '@type': 'WebSite',
+            '@id': `${siteUrl.href}#website`,
+            url: siteUrl.href,
+            name: siteTitle,
+            description: siteDescription,
+            inLanguage: 'en-IN',
+            publisher: { '@id': `${siteUrl.href}#person` },
+          },
+        ],
+      }
+    : undefined;
 ---
 
 <!doctype html>
@@ -64,8 +64,8 @@ const structuredData = siteUrl && !noindex
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
-    <meta name="author" content="Asif Imran Khan" />
-    <meta name="theme-color" content="#100425" />
+    <meta name="author" content={profile.name} />
+    <meta name="theme-color" content="#eceae3" />
     <title>{title}</title>
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
@@ -73,35 +73,22 @@ const structuredData = siteUrl && !noindex
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_IN" />
-    <meta property="og:site_name" content="Asif Imran Khan | Front-End Developer" />
+    <meta property="og:site_name" content={siteTitle} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
     {socialImageUrl && <meta property="og:image" content={socialImageUrl} />}
-    {socialImageUrl && <meta property="og:image:alt" content="Portrait of Asif Imran Khan" />}
-    <meta name="twitter:card" content="summary_large_image" />
+    {socialImageUrl && <meta property="og:image:alt" content={`Portrait of ${profile.name}`} />}
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {socialImageUrl && <meta name="twitter:image" content={socialImageUrl} />}
     <meta name="twitter:creator" content="@asifikhandev" />
     {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Josefin+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <Font cssVariable="--font-geist" preload />
   </head>
   <body>
-    <CustomCursor />
     <CommandPalette />
     <slot />
 

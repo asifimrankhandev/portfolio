@@ -1,0 +1,24 @@
+---
+interface Props {
+  index: string;
+  label: string;
+  headingId: string;
+}
+
+const { index, label, headingId } = Astro.props;
+const hasTitle = Astro.slots.has('title');
+---
+
+<div>
+  <div class="type-label flex items-center gap-3 border-b border-ink pb-6 text-[0.8125rem]">
+    <span>{index}</span>
+    <span aria-hidden="true" class="h-px w-4 bg-ink"></span>
+    {hasTitle ? <span>{label}</span> : <h2 id={headingId}>{label}</h2>}
+  </div>
+
+  {hasTitle && (
+    <h2 id={headingId} class="type-h2 mt-12 max-w-[13em] md:mt-14">
+      <slot name="title" />
+    </h2>
+  )}
+</div>

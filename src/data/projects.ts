@@ -1,3 +1,9 @@
+import type { ImageMetadata } from 'astro';
+import mapsArchitects from '@/assets/images/project-maps-architects.png';
+import aspireHotel from '@/assets/images/project-aspire-hotel-slider2.jpeg';
+import yumly from '@/assets/images/project-yumly-card.webp';
+import aaronHolmes from '@/assets/images/project-aaron-holmes.jpeg';
+
 export interface Project {
   id: number;
   title: string;
@@ -5,7 +11,8 @@ export interface Project {
   tech: string[];
   category: string;
   link: string;
-  image: string;
+  image: ImageMetadata;
+  featured?: boolean;
 }
 
 export const projectsData: Project[] = [
@@ -15,9 +22,10 @@ export const projectsData: Project[] = [
     description:
       'An official portfolio website for MAPS Architects, highlighting their high-end residential and commercial architectural projects with a highly visual, masonry-style gallery.',
     tech: ['Architecture', 'Portfolio', 'Web Design'],
-    category: 'Real Project',
+    category: 'Website',
     link: 'https://mapsarchitects.in/',
-    image: '/assets/images/project-maps-architects.png',
+    image: mapsArchitects,
+    featured: true,
   },
   {
     id: 2,
@@ -25,9 +33,9 @@ export const projectsData: Project[] = [
     description:
       'The official website for The Aspire Hotel in Guwahati, showcasing luxurious modern rooms, amenities, and a smooth booking-focused hospitality experience.',
     tech: ['Hospitality', 'Hotel Website', 'Booking UX'],
-    category: 'Real Project',
+    category: 'Website',
     link: 'https://theaspirehotel.com/',
-    image: '/assets/images/project-aspire-hotel-slider2.jpeg',
+    image: aspireHotel,
   },
   {
     id: 3,
@@ -35,9 +43,9 @@ export const projectsData: Project[] = [
     description:
       'A recipe and meal-planning app that helps users discover, save, and cook delicious meals with ingredient search, step-by-step instructions, and personalized meal plans.',
     tech: ['Android', 'Recipes', 'Meal Planning'],
-    category: 'Real Project',
+    category: 'Android App',
     link: 'https://play.google.com/store/apps/details?id=com.aik.yumly',
-    image: '/assets/images/project-yumly-card.webp',
+    image: yumly,
   },
   {
     id: 4,
@@ -45,8 +53,11 @@ export const projectsData: Project[] = [
     description:
       'A luxury real estate platform for London and UK property experts with dynamic listings, advanced search filters, and market intelligence reports.',
     tech: ['PHP', 'UI/UX', 'Real Estate Tech'],
-    category: 'Real Project',
+    category: 'Web Platform',
     link: 'https://aaron-holmes.com/design/index.php?page=home',
-    image: '/assets/images/project-aaron-holmes.jpeg',
+    image: aaronHolmes,
   },
 ];
+
+export const featuredProject = projectsData.find((project) => project.featured) ?? projectsData[0];
+export const selectedProjects = projectsData.filter((project) => project !== featuredProject);

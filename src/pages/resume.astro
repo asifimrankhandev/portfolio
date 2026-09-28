@@ -1,176 +1,156 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { profile } from '@/data/profile';
+
+const technicalSkills = ['React / Next.js', 'JavaScript / TypeScript', 'HTML / CSS / Tailwind'];
+const professionalSkills = [
+  'ICD-10 / CPT Coding',
+  'Medical Coding Expertise',
+  'Effective Communication',
+  'Critical Thinking & Leadership',
+  'Anatomy & Physiology',
+];
+const languages = [
+  { name: 'Bengali', level: 'Native' },
+  { name: 'English / Hindi / Urdu', level: 'Fluent' },
+  { name: 'Kannada', level: 'Basic' },
+];
+const certifications = ['Certified Nurse', 'Advance Diploma In Medical Coding', 'Degree Certificate'];
+const education = [
+  { institution: 'Rajiv Gandhi University of Health Sciences', school: 'B M S Hospital Nursing School', years: '2018 — 2022', score: '65%' },
+  { institution: 'West Bengal Council of HS Education', school: 'Model School', years: '2016 — 2018', score: '64%' },
+  { institution: 'West Bengal Board of Secondary Education', school: 'Sitanagar High School [HS]', years: '2010 — 2015', score: '75%' },
+];
+const work = [
+  {
+    role: 'Freelancer',
+    company: 'AIK Studio',
+    dates: '2024 — PRESENT',
+    summary:
+      'Specializing in building responsive and accessible front-end experiences. Delivering high-quality digital products for clients worldwide.',
+  },
+  {
+    role: 'Senior Executive Clinical',
+    company: 'Sagility India Private Limited',
+    dates: '01/2023 — PRESENT',
+    points: [
+      'Assign standardized codes for diagnoses and procedures.',
+      'Ensure compliance with healthcare regulations.',
+      'Communicate with insurers to resolve claims.',
+    ],
+  },
+  {
+    role: 'ER Nurse',
+    company: 'New Janapriya Super Speciality Hospital',
+    dates: '10/2022 — 01/2023',
+    points: [
+      'Rapid assessment and prioritization of patient conditions.',
+      'Administered medications and performed critical procedures.',
+      'Collaborated with teams for effective treatment plans.',
+    ],
+  },
+];
 ---
 
 <BaseLayout
-  title="Resume | Asif Imran Khan"
+  title={`Resume | ${profile.name}`}
   description="View Asif Imran Khan’s front-end development skills, professional experience, education, and resume."
 >
-  <div class="antialiased py-6 px-4 sm:py-10 sm:px-6 min-h-screen bg-[#050505] text-slate-300">
-    <div class="max-w-5xl mx-auto">
-      <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-10 sm:mb-12 print:hidden">
-        <div class="flex flex-wrap items-center gap-4">
-          <a
-            href="/"
-            class="text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-2 font-medium"
-          >
-            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-            Back to Portfolio
-          </a>
-        </div>
-        <button
-          type="button"
-          onclick="window.print()"
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-emerald-400 transition-colors shadow-sm"
-        >
-          <i class="fa-solid fa-print" aria-hidden="true"></i>
-          Download PDF
-        </button>
+  <div class="container-page max-w-5xl py-8 sm:py-12">
+    <header class="mb-8 flex flex-wrap items-center justify-between gap-4 print:hidden">
+      <a href="/" class="text-link text-sm"><span aria-hidden="true">←</span> Back to portfolio</a>
+      <button type="button" data-print class="btn btn-primary">Download PDF</button>
+    </header>
+
+    <main id="main-content" class="border border-line-strong bg-surface p-6 sm:p-12 print:border-0 print:p-0">
+      <header class="border-b border-line pb-8">
+        <h1 class="type-h2">{profile.name}</h1>
+        <p class="type-lead mt-4 text-ink-muted">
+          {profile.email} · {profile.location.city}, Karnataka, {profile.location.country}
+        </p>
+      </header>
+
+      <div class="grid gap-12 pt-10 md:grid-cols-12">
+        <aside class="space-y-10 md:col-span-4">
+          <section aria-labelledby="resume-skills">
+            <h2 id="resume-skills" class="type-label text-ink-muted">Skills</h2>
+            <p class="mt-4 text-xs font-medium text-ink-muted">Technical</p>
+            <ul class="mt-2 space-y-1.5 text-sm">{technicalSkills.map((skill) => <li>{skill}</li>)}</ul>
+            <p class="mt-5 text-xs font-medium text-ink-muted">Professional</p>
+            <ul class="mt-2 space-y-1.5 text-sm">{professionalSkills.map((skill) => <li>{skill}</li>)}</ul>
+          </section>
+
+          <section aria-labelledby="resume-languages">
+            <h2 id="resume-languages" class="type-label text-ink-muted">Languages</h2>
+            <ul class="mt-4 space-y-2 text-sm">
+              {languages.map((language) => (
+                <li class="flex justify-between gap-4">
+                  <span>{language.name}</span>
+                  <span class="text-ink-muted">{language.level}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section aria-labelledby="resume-certifications">
+            <h2 id="resume-certifications" class="type-label text-ink-muted">Certifications</h2>
+            <ul class="mt-4 space-y-1.5 text-sm">{certifications.map((item) => <li>{item}</li>)}</ul>
+          </section>
+
+          <section aria-labelledby="resume-education">
+            <h2 id="resume-education" class="type-label text-ink-muted">Education</h2>
+            <ul class="mt-4 space-y-6">
+              {education.map((entry) => (
+                <li class="text-sm">
+                  <p class="font-medium">{entry.institution}</p>
+                  <p class="text-ink-muted">{entry.school}</p>
+                  <p class="type-small mt-1 flex justify-between text-ink-muted">
+                    <span>{entry.years}</span>
+                    <span>{entry.score}</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </aside>
+
+        <section aria-labelledby="resume-work" class="md:col-span-8">
+          <h2 id="resume-work" class="type-label text-ink-muted">Work Experience</h2>
+          <ol class="mt-4">
+            {work.map((job) => (
+              <li class="border-b border-line py-6 first:pt-2 last:border-b-0">
+                <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <h3 class="type-h3">{job.role}</h3>
+                  <span class="type-small text-ink-muted">{job.dates}</span>
+                </div>
+                <p class="mt-1 text-sm text-ink-muted">{job.company}</p>
+                {job.summary && <p class="type-body mt-4 text-ink-soft">{job.summary}</p>}
+                {job.points && (
+                  <ul class="type-body mt-4 space-y-1.5 text-ink-soft">
+                    {job.points.map((point) => <li>・ {point}</li>)}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
       </div>
-
-      {/* The Resume Sheet */}
-      <div class="p-8 sm:p-12 md:p-16 rounded-xl bg-[#101010] shadow-lg print:shadow-none print:p-0 print:bg-white text-slate-300">
-
-        <header class="mb-12 md:mb-16 print:mb-12 text-center md:text-left">
-          <h1 class="text-4xl md:text-5xl font-bold mb-3 text-white tracking-tight">Asif Imran Khan</h1>
-          <p class="text-lg md:text-xl text-slate-400">imran@idexa.app &bull; Bangalore, Karnataka, India</p>
-        </header>
-
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
-
-          {/* Left Sidebar */}
-          <div class="md:col-span-4 space-y-12">
-
-            <section>
-              <h3 class="text-sm font-bold uppercase tracking-widest mb-6 pb-2 border-b-2 border-slate-800 text-slate-300">Skills</h3>
-
-              <div class="mb-6">
-                <p class="text-xs uppercase mb-3 text-slate-500 font-medium tracking-wide">Technical</p>
-                <ul class="space-y-2.5 text-sm text-slate-400">
-                  <li>React / Next.js</li>
-                  <li>JavaScript / TypeScript</li>
-                  <li>HTML / CSS / Tailwind</li>
-                </ul>
-              </div>
-
-              <div>
-                <p class="text-xs uppercase mb-3 text-slate-500 font-medium tracking-wide">Professional</p>
-                <ul class="space-y-2.5 text-sm text-slate-400">
-                  <li>ICD-10 / CPT Coding</li>
-                  <li>Medical Coding Expertise</li>
-                  <li>Effective Communication</li>
-                  <li>Critical Thinking & Leadership</li>
-                  <li>Anatomy & Physiology</li>
-                </ul>
-              </div>
-            </section>
-
-            <section>
-              <h3 class="text-sm font-bold uppercase tracking-widest mb-6 pb-2 border-b-2 border-slate-800 text-slate-300">Languages</h3>
-              <ul class="space-y-3.5 text-sm text-slate-400">
-                <li class="flex justify-between items-center">
-                  <span>Bengali</span>
-                  <span class="text-emerald-400 font-medium">Native</span>
-                </li>
-                <li class="flex justify-between items-center">
-                  <span>English / Hindi / Urdu</span>
-                  <span class="text-emerald-400 font-medium">Fluent</span>
-                </li>
-                <li class="flex justify-between items-center">
-                  <span>Kannada</span>
-                  <span class="text-emerald-400 font-medium">Basic</span>
-                </li>
-              </ul>
-            </section>
-
-            <section>
-              <h3 class="text-sm font-bold uppercase tracking-widest mb-6 pb-2 border-b-2 border-slate-800 text-slate-300">Certifications</h3>
-              <ul class="space-y-3 text-sm text-slate-400">
-                <li>Certified Nurse</li>
-                <li>Advance Diploma In Medical Coding</li>
-                <li>Degree Certificate</li>
-              </ul>
-            </section>
-
-            <section>
-              <h3 class="text-sm font-bold uppercase tracking-widest mb-6 pb-2 border-b-2 border-slate-800 text-slate-300">Education</h3>
-
-              <div class="mb-7">
-                <p class="font-semibold text-sm text-white leading-snug mb-1">Rajiv Gandhi University of Health Sciences</p>
-                <p class="text-sm text-slate-400">B M S Hospital Nursing School</p>
-                <div class="flex justify-between text-sm mt-1 text-emerald-400 font-mono">
-                  <span>2018 — 2022</span>
-                  <span>65%</span>
-                </div>
-              </div>
-
-              <div class="mb-7">
-                <p class="font-semibold text-sm text-white leading-snug mb-1">West Bengal Council of HS Education</p>
-                <p class="text-sm text-slate-400">Model School</p>
-                <div class="flex justify-between text-sm mt-1 text-emerald-400 font-mono">
-                  <span>2016 — 2018</span>
-                  <span>64%</span>
-                </div>
-              </div>
-
-              <div>
-                <p class="font-semibold text-sm text-white leading-snug mb-1">West Bengal Board of Secondary Education</p>
-                <p class="text-sm text-slate-400">Sitanagar High School [HS]</p>
-                <div class="flex justify-between text-sm mt-1 text-emerald-400 font-mono">
-                  <span>2010 — 2015</span>
-                  <span>75%</span>
-                </div>
-              </div>
-            </section>
-
-          </div>
-
-          {/* Right Main Content */}
-          <div class="md:col-span-8">
-            <section>
-              <h3 class="text-sm font-bold uppercase tracking-widest mb-8 pb-2 border-b-2 border-slate-800 text-slate-300">Work Experience</h3>
-
-              <div class="mb-12">
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 gap-3">
-                  <h4 class="text-2xl font-bold text-white">Freelancer</h4>
-                  <span class="text-sm font-mono px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-md">2024 — PRESENT</span>
-                </div>
-                <p class="text-lg text-slate-400 mb-4">AIK Studio</p>
-                <p class="text-base text-slate-400 leading-relaxed">
-                  Specializing in building responsive and accessible front-end experiences. Delivering high-quality digital products for clients worldwide.
-                </p>
-              </div>
-
-              <div class="mb-12">
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 gap-3">
-                  <h4 class="text-2xl font-bold text-white">Senior Executive Clinical</h4>
-                  <span class="text-sm font-mono px-3 py-1 bg-slate-800 text-slate-400 rounded-md">01/2023 — PRESENT</span>
-                </div>
-                <p class="text-lg text-slate-400 mb-4 uppercase tracking-wide">Sagility India Private Limited</p>
-                <ul class="text-base space-y-2.5 text-slate-400 leading-relaxed list-disc list-inside">
-                  <li>Assign standardized codes for diagnoses and procedures.</li>
-                  <li>Ensure compliance with healthcare regulations.</li>
-                  <li>Communicate with insurers to resolve claims.</li>
-                </ul>
-              </div>
-
-              <div>
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 gap-3">
-                  <h4 class="text-2xl font-bold text-white">ER Nurse</h4>
-                  <span class="text-sm font-mono px-3 py-1 bg-slate-800 text-slate-400 rounded-md">10/2022 — 01/2023</span>
-                </div>
-                <p class="text-lg text-slate-400 mb-4 uppercase tracking-wide">New Janapriya Super Speciality Hospital</p>
-                <ul class="text-base space-y-2.5 text-slate-400 leading-relaxed list-disc list-inside">
-                  <li>Rapid assessment and prioritization of patient conditions.</li>
-                  <li>Administered medications and performed critical procedures.</li>
-                  <li>Collaborated with teams for effective treatment plans.</li>
-                </ul>
-              </div>
-            </section>
-          </div>
-
-        </div>
-      </div>
-    </div>
+    </main>
   </div>
 </BaseLayout>
+
+<script>
+  document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+</script>
+
+<style is:global>
+  @media print {
+    @page {
+      margin: 16mm;
+    }
+
+    body {
+      background: #fff;
+    }
+  }
+</style>

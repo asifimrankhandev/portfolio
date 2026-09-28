@@ -1,88 +1,134 @@
 ---
-const sections = [
-  { id: 'home', label: 'Home' },
-  { id: 'about', label: 'About' },
-  { id: 'projects', label: 'Work' },
-  { id: 'contact', label: 'Contact' },
-];
+import { profile } from '@/data/profile';
+
 const isHome = Astro.url.pathname === '/';
-const hrefFor = (id: string) => id === 'home' ? (isHome ? '#home' : '/') : (isHome ? `#${id}` : `/#${id}`);
+const sectionHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
+
+const links = [
+  { label: 'Home', href: isHome ? '#home' : '/', section: 'home' },
+  { label: 'Work', href: sectionHref('work'), section: 'work' },
+  { label: 'About', href: sectionHref('about'), section: 'about' },
+  { label: 'Resume', href: profile.resumePath },
+];
 ---
 
-<a href="#main-content" class="absolute -top-16 left-4 z-[1200] rounded bg-ink px-4 py-3 font-bold text-canvas focus:top-4">Skip to content</a>
-<header class="absolute inset-x-0 top-0 z-[1000]">
-  <div class="relative h-[4.25rem] w-full">
-    <nav class="absolute left-[18.75%] top-0 hidden items-center gap-[clamp(2rem,6.5vw,6rem)] pt-4 min-[900px]:flex" aria-label="Primary navigation">
-      {sections.slice(0, 2).map(({ id, label }) => <a data-nav-section={id} href={hrefFor(id)} aria-current={id === 'home' ? 'location' : undefined} class="py-1 text-base font-normal uppercase tracking-normal text-white/95 transition-colors hover:text-white/75">{label}</a>)}
-    </nav>
-    <div aria-hidden="true" class="nav-notch absolute left-1/2 top-0 hidden h-[3rem] w-[14vw] min-w-32 max-w-48 -translate-x-1/2 min-[900px]:block"></div>
-    <nav class="absolute left-[65.3%] top-0 hidden items-center gap-[clamp(2rem,6.5vw,6rem)] pt-4 min-[900px]:flex" aria-label="Secondary navigation">
-      {sections.slice(2).map(({ id, label }) => <a data-nav-section={id} href={hrefFor(id)} class="py-1 text-base font-normal uppercase tracking-normal text-white/95 transition-colors hover:text-white/75">{label}</a>)}
-    </nav>
-    <button type="button" data-menu-toggle class="absolute right-4 top-2.5 z-[1200] grid size-10 place-items-center rounded-full border border-white/20 bg-white/5 text-white backdrop-blur-md min-[900px]:hidden" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-navigation">
-      <svg data-menu-open class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
-      <svg data-menu-close class="hidden size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
-    </button>
+<header class="sticky top-0 z-[1000] bg-canvas">
+  <a
+    href="#main-content"
+    class="btn btn-primary fixed left-4 top-3 z-[1200] -translate-y-24 focus-visible:translate-y-0"
+  >
+    Skip to content
+  </a>
+  <div class="container-page">
+    <div class="grid h-[var(--header-height)] grid-cols-[1fr_auto] items-center border-b border-ink md:grid-cols-3">
+      <a href={isHome ? '#home' : '/'} class="type-label justify-self-start text-[0.8125rem]">{profile.name}</a>
+
+      <nav class="hidden items-center gap-6 justify-self-center md:flex" aria-label="Primary navigation">
+        {links.map((link) => (
+          <a
+            href={link.href}
+            data-nav-section={link.section}
+            class="type-label text-[0.8125rem] underline-offset-[5px] hover:underline aria-[current=location]:underline aria-[current=location]:decoration-accent"
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+
+      <div class="flex items-center gap-4 justify-self-end">
+        <button
+          type="button"
+          data-command-open
+          class="type-label hidden border border-line px-1.5 py-0.5 text-[0.6875rem] text-ink-muted transition-colors hover:border-ink hover:text-ink sm:inline-block"
+          aria-label="Open command menu"
+          aria-keyshortcuts="Meta+K Control+K"
+        >
+          ⌘K
+        </button>
+        <a href={`mailto:${profile.email}`} class="type-label group hidden text-[0.8125rem] sm:inline-flex sm:items-center sm:gap-1.5">
+          Email me <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+        <button
+          type="button"
+          data-menu-toggle
+          class="type-label -mr-2 px-2 py-2 text-[0.8125rem] md:hidden"
+          aria-expanded="false"
+          aria-controls="mobile-navigation"
+        >
+          <span data-menu-label>Menu</span>
+        </button>
+      </div>
+    </div>
   </div>
 </header>
-<div id="mobile-navigation" data-mobile-navigation class="fixed inset-0 z-[900] hidden flex-col bg-canvas px-6 pb-8 pt-24 min-[900px]:hidden">
-  <nav class="flex flex-col" aria-label="Mobile navigation">
-    {sections.map(({ id, label }) => <a data-nav-section={id} href={hrefFor(id)} aria-current={id === 'home' ? 'location' : undefined} class="border-b border-line py-4 text-2xl font-display font-semibold text-white/95 transition-colors hover:text-white/75">{label}</a>)}
+
+<div
+  id="mobile-navigation"
+  data-mobile-navigation
+  class="fixed inset-x-0 bottom-0 top-[var(--header-height)] z-[900] hidden flex-col justify-between bg-canvas md:hidden"
+>
+  <nav class="container-page flex flex-col pt-4" aria-label="Mobile navigation">
+    {links.map((link) => (
+      <a href={link.href} data-nav-section={link.section} class="type-h2 border-b border-line py-4">
+        {link.label}
+      </a>
+    ))}
+    <a href={sectionHref('contact')} class="type-h2 border-b border-line py-4">Contact</a>
   </nav>
+  <p class="container-page type-label flex items-center gap-2 pb-8">
+    <span class="status-dot status-dot-accent" aria-hidden="true"></span>
+    {profile.availability.label}
+  </p>
 </div>
 
 <script>
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const toggleLabel = toggle?.querySelector<HTMLElement>('[data-menu-label]');
   const menu = document.querySelector<HTMLElement>('[data-mobile-navigation]');
-  const closeMenu = () => {
+
+  const setMenuOpen = (open: boolean, { restoreFocus = false } = {}) => {
     if (!toggle || !menu) return;
-    menu.classList.add('hidden');
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', 'Open navigation menu');
-    document.querySelector('[data-menu-close]')?.classList.add('hidden');
-    document.querySelector('[data-menu-open]')?.classList.remove('hidden');
-    document.body.style.overflow = '';
+    menu.classList.toggle('hidden', !open);
+    menu.classList.toggle('flex', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    if (toggleLabel) toggleLabel.textContent = open ? 'Close' : 'Menu';
+    document.body.style.overflow = open ? 'hidden' : '';
+    if (open) menu.querySelector<HTMLAnchorElement>('a')?.focus();
+    else if (restoreFocus) toggle.focus();
   };
 
   toggle?.addEventListener('click', () => {
-    if (!menu) return;
-    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-    menu.classList.toggle('hidden', isOpen);
-    toggle.setAttribute('aria-expanded', String(!isOpen));
-    toggle.setAttribute('aria-label', isOpen ? 'Open navigation menu' : 'Close navigation menu');
-    document.querySelector('[data-menu-close]')?.classList.toggle('hidden', isOpen);
-    document.querySelector('[data-menu-open]')?.classList.toggle('hidden', !isOpen);
-    document.body.style.overflow = isOpen ? '' : 'hidden';
+    setMenuOpen(toggle.getAttribute('aria-expanded') !== 'true');
   });
 
-  menu?.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => link.addEventListener('click', (event) => {
-    const url = new URL(link.href);
-    if (url.pathname === window.location.pathname && url.hash) {
-      event.preventDefault();
-      document.getElementById(url.hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
-      history.replaceState(null, '', url.hash);
-    }
-    closeMenu();
-  }));
+  menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setMenuOpen(false)));
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeMenu();
+    if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      setMenuOpen(false, { restoreFocus: true });
+    }
+  });
+
+  window.matchMedia('(min-width: 768px)').addEventListener('change', (event) => {
+    if (event.matches) setMenuOpen(false);
   });
 
   if (window.location.pathname === '/') {
     const navLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav-section]')];
-    const sections = navLinks.map((link) => document.getElementById(link.dataset.navSection ?? '')).filter((section): section is HTMLElement => section instanceof HTMLElement);
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-      navLinks.forEach((link) => {
-        const active = link.dataset.navSection === visible.target.id;
-        if (active) link.setAttribute('aria-current', 'location');
-        else link.removeAttribute('aria-current');
-        link.classList.toggle('text-white', active);
-        link.classList.toggle('text-white/95', !active);
-      });
-    }, { rootMargin: '-20% 0px -65% 0px' });
+    const sections = document.querySelectorAll<HTMLElement>('main section[id]');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          navLinks.forEach((link) => {
+            if (link.dataset.navSection === entry.target.id) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+          });
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
     sections.forEach((section) => observer.observe(section));
   }
 </script>

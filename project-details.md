@@ -4,16 +4,17 @@
 
 ## Repository validation and implementation notes
 
-This plan is buildable, with the following alignment work needed against the current repository:
+**Updated 2026-09-28.** The repository has since moved past several items this section used to flag; this note reflects current reality rather than the original pre-migration audit.
 
-- The existing project is a React 19 + Vite client-rendered app with React Router, not a blank project. Phase 1 should extend that setup rather than scaffold a second app or introduce a framework migration.
-- The current home page already renders Services, a theme command menu, a Resume route, and a FormSubmit contact form. These are marked optional/conditional later in this plan. Decide which are intentional launch features and update the feature matrix before treating that matrix as the implementation checklist.
-- The contact UI currently reports success on a timer without confirming the form provider's response. Its success state must reflect a confirmed submission, and failure must preserve the entered values.
-- The implementation has no project listing/detail route or data-driven project collection yet. Those remain real gaps against the essential scope; do not infer they exist from the home page's selected-work section.
-- The theme preference is persisted and resolved, but most editorial sections use fixed light/dark colors. A theme toggle is only complete after all routes and shared components use the same semantic theme tokens.
-- Several citation markers in this document (for example `turn0search0`) are transient research references rather than usable bibliography links. Replace them with stable source URLs before using this audit as an externally reviewable technical record.
+- The project is now **Astro 7 + TypeScript**, not React + Vite. Components live in `src/components/{layout,sections,ui}`; interactive behavior (mobile menu, command palette, copy-email button, hero dot-grid, contact grain spotlight, scroll reveal) is plain TypeScript in `<script>` tags — there is no client-side framework runtime at all. Any future guidance in this document that assumes React/JSX no longer applies as written; treat "component" as "Astro component or vanilla-TS-enhanced markup."
+- Contact is **email only** (Option C in §33): a `mailto:` CTA with a copy-address button, repeated in the footer. The earlier FormSubmit form was removed as not required — §32.3 makes the email link the default, and dropping the form removes a third-party dependency and its spam/privacy obligations. §14.3–§14.9 and §67 apply only if a form is reintroduced.
+- Content is data-driven: `src/data/profile.ts` (§4.1/§4.2 profile and social links), `projects.ts`, `services.ts`, `process.ts`, `experience.ts`. A dedicated `/projects/:slug` detail route still does not exist — that remains a real gap against §9–§10 if project detail pages are wanted later.
+- Theme is a single light theme by design decision (no light/dark toggle). §16 (Theme System) and §70 (Theme Atomic Requirements) no longer apply as written since there is no toggle to test.
+- Images live in `src/assets/images` and are served through `astro:assets` (resized, WebP, explicit dimensions), satisfying §20. Fonts are self-hosted at build time through Astro's Fonts API — no third-party requests at runtime.
+- SEO is implemented beyond what earlier revisions of this section described as gaps: per-page canonical URLs, Open Graph/Twitter meta, JSON-LD (`Person` + `WebSite`), an XML sitemap (`@astrojs/sitemap`), and a generated `robots.txt` (`src/pages/robots.txt.ts`) all exist and were verified building cleanly.
+- Citation markers (e.g. `turn0search0`) from the original research pass are still present below and are still not resolvable bibliography links — this was flagged before and remains unaddressed; harmless to leave, but don't cite this document externally without stripping them first.
 
-The design-system implementation establishes semantic color, type, spacing, radius, shadow, motion, focus, and reduced-motion foundations in `src/styles/global.css`. Use the supplied dark violet, cyan, and magenta references as the visual direction and use semantic tokens for new or refactored UI.
+The design-system implementation establishes semantic color, type, radius, motion, focus, and reduced-motion foundations in `src/styles/global.css`, matching the warm-paper editorial direction and Geist typography described in §42.
 
 This specification has been reviewed for practical implementability using current web-platform capabilities and standard production architecture.
 
@@ -2226,50 +2227,73 @@ If external fonts are used:
 
 # 42. Design System
 
-Define reusable design tokens in `src/styles/global.css` using CSS custom properties and Tailwind theme mappings. Follow the supplied visual references: a deep violet-navy canvas, cyan and magenta gradients, Josefin Sans display typography, and Inter body text.
+Tokens live in `src/styles/global.css` in a single Tailwind `@theme` block, so each token is also a utility (`bg-canvas`, `text-ink-muted`, `border-line`, `rounded-card`). Visual reference: sandeep.design — warm paper background, near-black ink, a single red-orange accent, small uppercase editorial labels, very large tightly-tracked display type, and numbered sections (`01 — Featured case`, `P. 02`, `H. 01`).
+
+Do not name a token after a component class: Tailwind generates a utility per token (a `--color-link` token produces a `text-link` utility that silently overrides a `.text-link` component).
 
 ## Colors
 
 ```text
-page: #100425
-surface: translucent violet-black
-surface-secondary: #21133c
-text-primary: #f8f6fb
-text-secondary: #c5bbd2
-border: 16% lavender-white
-violet: #dc00d3
-cyan: #0cffff
-primary-action: linear-gradient(110deg, cyan, violet)
-form-field: #f8f8fb with #100425 text
-success: #16805d
-error: #c43e3e
-warning: #9a6700
+canvas (page):      #eceae3
+surface (card):     #f4f3ee
+surface-muted:      #e5e3db
+surface-strong:     #dcd9cf
+ink:                #0e0e0f   rules under the header and section labels use ink, not a faint hairline
+ink-soft:           #2a2a2a
+ink-muted:          #666561   >= 4.5:1 on canvas, surface, and surface-muted — lightest color allowed for body text
+line:               rgb(111 110 106 / 0.2)
+line-strong:        #b8b6b0
+accent:             #e5341b   ~3.4:1 on canvas — display/large type and decoration only, never body text
+accent-strong:      #c12b16   small red text (H. markers, hover states) and the accent button; >= 4.5:1 as text and behind white text
+signal:             #00ba00   hero dot-grid only
+success:            #1fb46a
+focus:              #2e6bdb   focus ring
 ```
 
-## Spacing
+## Typography
 
-Use the Tailwind spacing scale for component internals; use the shared `page-gutter` and `section` responsive tokens for page-level layout. Avoid adding one-off spacing values when a token or scale value fits.
+- One family: Geist (variable, 400–600) — a free stand-in for the reference's commercial PP Neue Montreal — self-hosted via Astro's Fonts API (`astro.config.mjs`), no CDN. Index markers (`P. 02`, `H. 01`) use the same sans, as in the reference.
+
+```text
+type-display  clamp(3rem, 6.6vw, 5.75rem)    weight 400  line-height .98  tracking -0.058em   hero
+type-h2       clamp(2.5rem, 5.4vw, 4.75rem)  weight 430  line-height 1    tracking -0.055em   section statements
+type-title    clamp(2rem, 3.2vw, 2.75rem)    weight 420  line-height 1.08                     featured title, second statements, CTA
+type-h3       clamp(1.375rem, 2vw, 1.625rem) weight 420                                       list and card titles
+type-h4       19px                                                                             process steps
+type-lead     16px / 1.45
+type-body     14px / 1.45
+type-small    13px / 1.4
+type-label    12px uppercase, tracking .02em  (nav, meta rows, section markers)
+```
+
+Lead phrases in the hero and section statements are set in `text-accent`, the rest in ink.
+
+## Components
+
+- `.btn` + `.btn-primary` (ink), `.btn-accent` (red, the main CTA), `.btn-secondary` (ink outline) — uppercase, square.
+- `.tag` — square ink-bordered label (project category, stack items).
+- `SectionHeading` — `01 —— LABEL` over an ink rule; an optional `title` slot renders the section's large statement.
+- Selected-work rows: one link per row; on hover the row shifts right, the title turns accent, `↗` becomes `→`, and a preview image fades in. Small screens show the image inline instead.
+
+## Spacing and layout
+
+Use the Tailwind spacing scale. Page content sits in `.container-page` (max 80rem, responsive gutters); `.section` adds bottom-only padding so section gaps match the reference's rhythm.
 
 ## Radius
 
-Define consistent:
-
-```text
-small
-medium
-large
-pill
-```
-
-Initial values: control `0.5rem`, card `1rem`, pill `9999px`.
+None. Every surface — images, buttons, tags, cards — has square corners, as in the reference.
 
 ## Shadows
 
-Use a limited set of soft violet shadows and cyan/magenta glows for featured actions. Keep shadows restrained and remove them for print where applicable.
+Essentially none — the reference separates content with rules and spacing, not elevation. The command dialog is the only shadowed surface.
 
-## Motion
+## Motion and interactive illustration
 
-Use fast `160ms`, base `280ms`, and slow `700ms` durations with the shared standard easing. Honor `prefers-reduced-motion`; motion must not be required to reveal content or understand state.
+- Durations: fast `160ms`, base `280ms`, slow `700ms`, shared `ease-standard` curve.
+- Hero: `DotGrid` — invisible at rest (base opacity 0); dots within 200px of the pointer are pushed out 50px, forming a green ring. 20px spacing, 3.5px dots, 0.12 easing. Confined to the hero section.
+- Contact card: `GrainSpotlight` — animated red film grain (280px radius, 0.35 intensity) following the pointer inside the card.
+- Availability dot pulses with a ring ripple.
+- Every effect is off for touch pointers and `prefers-reduced-motion`, only animates while the pointer is active, and never hides content. Scroll reveal only hides content under `@media (scripting: enabled)`, so the page is fully visible without JavaScript.
 
 ---
 

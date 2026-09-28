@@ -1,0 +1,30 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { processSteps } from '@/data/process';
+---
+
+<section id="process" aria-labelledby="process-heading" class="container-page section">
+  <SectionHeading index="05" label="How I work?" headingId="process-heading" />
+
+  <div class="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-6">
+    <div class="reveal lg:col-span-4" data-reveal>
+      <p class="type-h3 max-w-[16em]">What working together actually looks like.</p>
+      <p class="type-lead mt-3 max-w-[23rem] text-ink-soft">
+        I work closely with designers and engineers on a team, and own the build end-to-end when working independently —
+        staying close to the product, its constraints, and its users.
+      </p>
+    </div>
+
+    <ol class="lg:col-span-8 lg:col-start-5">
+      {processSteps.map((step, i) => (
+        <li class="reveal grid grid-cols-[4.5rem_1fr] gap-x-4 border-b border-line py-6 first:pt-0 last:border-b-0 sm:grid-cols-[5.5rem_1fr]" data-reveal>
+          <span class="type-small pt-1 text-accent-strong">H. {String(i + 1).padStart(2, '0')}</span>
+          <div>
+            <h3 class="type-h4">{step.title}</h3>
+            <p class="type-small mt-2 max-w-[33rem] text-ink-soft">{step.description}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

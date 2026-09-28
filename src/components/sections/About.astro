@@ -1,129 +1,45 @@
 ---
-const skillRows = [
-  [
-    { name: 'Figma', icon: '', mark: 'figma', color: '#F24E1E' },
-    { name: 'React', icon: 'fa-brands fa-react', mark: '', color: '#61DAFB' },
-    { name: 'C', icon: '', mark: 'C', color: '#4FA3E3' },
-    { name: 'Node.js', icon: '', mark: 'node', color: '#A8D08D' },
-    { name: 'Redux', icon: '', mark: '↻', color: '#9B75D7' },
-    { name: 'JavaScript', icon: 'fa-brands fa-js', mark: '', color: '#F7DF1E' },
-    { name: 'CSS', icon: 'fa-brands fa-css3-alt', mark: '', color: '#38A8E8' },
-  ],
-  [
-    { name: 'Adobe XD', icon: '', mark: 'Xd', color: '#FF2BC2' },
-    { name: 'Next.js', icon: '', mark: 'NEXT.', color: '#BFC0CC' },
-    { name: 'Gatsby', icon: '', mark: 'G', color: '#B58AFF' },
-    { name: 'Adobe Illustrator', icon: '', mark: 'Ai', color: '#FF9A00' },
-    { name: 'Express', icon: '', mark: 'express', color: '#D4CFD9' },
-    { name: 'MongoDB', icon: '', mark: '♦ mongoDB', color: '#55B86A' },
-  ],
-];
+import { Image } from 'astro:assets';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import portrait from '@/assets/images/profile.webp';
+import { profile } from '@/data/profile';
 ---
 
-<section class="about-section relative isolate overflow-hidden bg-canvas px-2 py-20 sm:px-6 sm:py-24 md:min-h-[52rem] md:py-28" id="about">
-  <div class="about-grid pointer-events-none absolute right-0 top-0 -z-10 h-[23rem] w-[min(44vw,30rem)]" aria-hidden="true"></div>
+<section id="about" aria-labelledby="about-heading" class="container-page section">
+  <SectionHeading index="03" label="About" headingId="about-heading">
+    <Fragment slot="title">I build interfaces where the <span class="text-accent">details hold up</span>.</Fragment>
+  </SectionHeading>
 
-  <div class="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">
-    <div class="reveal" data-reveal>
-      <h2 class="mx-auto w-fit font-display text-4xl font-bold leading-none tracking-tight text-gradient-heading sm:text-5xl md:text-6xl">
-        About
-      </h2>
-      <p class="ds-copy mx-auto mt-10 max-w-[68rem] text-sm leading-7 text-white/80 sm:text-base sm:leading-8">
-        I’m a front-end developer focused on building accessible, high-performance interfaces with React and modern CSS — from marketing sites and booking flows to internal tools. Before software, I worked in healthcare, which shaped my methodical approach to problem-solving and my focus on the person using what I build.
-      </p>
+  <div class="reveal mt-12 grid gap-10 md:mt-16 lg:grid-cols-12" data-reveal>
+    <div class="lg:col-span-4">
+      <Image
+        src={portrait}
+        alt={`Portrait of ${profile.name}`}
+        widths={[320, 449]}
+        sizes="(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw"
+        class="aspect-[4/5] w-full max-w-sm bg-surface-muted object-cover"
+      />
     </div>
 
-    <div class="reveal mt-12 flex max-w-full flex-col items-center gap-3 sm:-translate-x-5" data-reveal role="group" aria-label="Technology and practice areas">
-      {skillRows.map((row, rowIndex) => (
-        <ul class:list={["flex max-w-full flex-wrap justify-center", rowIndex === 0 ? "gap-1.5 sm:gap-2.5" : "gap-2.5"]}>
-          {row.map((skill) => (
-            <li
-              aria-label={skill.name}
-              title={skill.name}
-              class="skill-icon-disc grid size-[2.625rem] place-items-center rounded-full border border-white/[0.07] bg-[#21152f]/90 text-lg backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:scale-105 hover:border-white/30 sm:size-11"
-              style={`--skill-icon-color: ${skill.color}`}
-            >
-              {skill.icon ? <i class={skill.icon} aria-hidden="true"></i> : skill.mark === 'figma' ? (
-                <svg class="size-[1.15rem]" viewBox="0 0 24 36" aria-hidden="true">
-                  <path fill="#F24E1E" d="M12 0h0a6 6 0 0 1 0 12H6A6 6 0 0 1 6 0h6Z" />
-                  <path fill="#FF7262" d="M0 6a6 6 0 0 1 6-6h6v12H6a6 6 0 0 1-6-6Z" />
-                  <path fill="#A259FF" d="M0 18a6 6 0 0 1 6-6h6v12H6a6 6 0 0 1-6-6Z" />
-                  <path fill="#1ABCFE" d="M12 12h0a6 6 0 1 1 0 12h0V12Z" />
-                  <path fill="#0ACF83" d="M0 30a6 6 0 0 1 6-6h6v6a6 6 0 1 1-12 0Z" />
-                </svg>
-              ) : skill.name === 'Gatsby' ? (
-                <svg class="size-6" viewBox="0 0 32 32" aria-hidden="true">
-                  <circle cx="16" cy="16" r="15" fill="#663399" />
-                  <text x="6" y="22" fill="white" font-family="Arial, sans-serif" font-size="19" font-weight="700">G</text>
-                  <path d="M21 9h6v2h-6z" fill="white" />
-                </svg>
-              ) : <span class:list={["font-display font-bold", skill.mark.length > 4 ? "text-[0.4rem]" : skill.mark.length > 2 ? "text-[0.52rem]" : "text-[0.7rem]"]}>{skill.mark}</span>}
-              <span class="sr-only">{skill.name}</span>
-            </li>
-          ))}
-        </ul>
-      ))}
-    </div>
-
-    <div class="about-orbit-scene relative -mt-2 w-full max-w-[64rem] sm:mt-0 sm:-translate-x-5" aria-hidden="true">
-      <svg class="absolute inset-0 size-full overflow-visible" viewBox="0 0 860 380" preserveAspectRatio="none" fill="none">
-        <defs>
-          <linearGradient id="orbitStroke" x1="0" y1="0" x2="860" y2="380" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#A64CC9" stop-opacity=".24" />
-            <stop offset=".5" stop-color="#A64CC9" stop-opacity=".46" />
-            <stop offset="1" stop-color="#A64CC9" stop-opacity=".24" />
-          </linearGradient>
-        </defs>
-        <g class="hidden sm:block">
-          <path d="M317 0 C382 40 416 105 426 150" stroke="url(#orbitStroke)" />
-          <path d="M362 0 C403 45 420 108 428 150" stroke="url(#orbitStroke)" />
-          <path d="M407 0 C429 55 430 112 429 150" stroke="url(#orbitStroke)" />
-          <path d="M453 0 C431 55 430 112 431 150" stroke="url(#orbitStroke)" />
-          <path d="M498 0 C457 45 440 108 432 150" stroke="url(#orbitStroke)" />
-          <path d="M543 0 C478 40 444 105 434 150" stroke="url(#orbitStroke)" />
-        </g>
-        <g class="sm:hidden">
-          <path d="M95 0 C260 48 370 154 418 220" stroke="url(#orbitStroke)" />
-          <path d="M229 0 C310 58 390 158 422 220" stroke="url(#orbitStroke)" />
-          <path d="M363 0 C405 72 425 164 426 220" stroke="url(#orbitStroke)" />
-          <path d="M497 0 C455 72 435 164 434 220" stroke="url(#orbitStroke)" />
-          <path d="M631 0 C550 58 470 158 438 220" stroke="url(#orbitStroke)" />
-          <path d="M765 0 C600 48 490 154 442 220" stroke="url(#orbitStroke)" />
-        </g>
-        <ellipse cx="430" cy="264" rx="370" ry="83" stroke="url(#orbitStroke)" />
-        <ellipse cx="430" cy="264" rx="320" ry="74" stroke="url(#orbitStroke)" />
-        <ellipse cx="430" cy="264" rx="277" ry="65" stroke="url(#orbitStroke)" />
-        <ellipse cx="430" cy="257" rx="96" ry="30" stroke="url(#orbitStroke)" stroke-opacity=".55" />
-        <rect x="102" y="214" width="16" height="16" rx="2" fill="#241331" stroke="#A64CC9" />
-        <text x="104" y="226" fill="#D28CEB" font-size="10" font-weight="700">in</text>
-        <circle cx="204" cy="212" r="8" fill="#7541A2" stroke="#C582E9" />
-        <text x="200" y="216" fill="#FFFFFF" font-size="10" font-weight="700">G</text>
-        <path d="M110 292l10 3v10c0 7-5 11-10 14-5-3-10-7-10-14v-10l10-3Z" fill="#241331" stroke="#A64CC9" />
-        <text x="104" y="307" fill="#D28CEB" font-size="9" font-weight="700">5</text>
-        <path d="M196 308c5-6 12-6 17 0-5 6-12 6-17 0Zm5 9c5-6 12-6 17 0-5 6-12 6-17 0Z" fill="none" stroke="#C45BDB" stroke-width="1.7" />
-        <rect x="237" y="184" width="17" height="17" rx="2" fill="#241331" stroke="#A64CC9" />
-        <text x="240" y="197" fill="#D28CEB" font-size="10" font-weight="700">Ai</text>
-        <text x="603" y="196" fill="#D28CEB" font-size="13" font-weight="700">&lt;/&gt;</text>
-        <rect x="741" y="213" width="18" height="18" rx="2" fill="#241331" stroke="#A64CC9" />
-        <text x="744" y="226" fill="#D28CEB" font-size="10" font-weight="700">JS</text>
-        <g transform="translate(656 212)" fill="none" stroke="#C45BDB" stroke-width="1.2">
-          <ellipse rx="10" ry="4.5" />
-          <ellipse rx="10" ry="4.5" transform="rotate(60)" />
-          <ellipse rx="10" ry="4.5" transform="rotate(120)" />
-          <circle r="1.5" fill="#A64CC9" />
-        </g>
-        <rect x="742" y="298" width="17" height="17" rx="2" fill="#241331" stroke="#A64CC9" />
-        <text x="745" y="311" fill="#D28CEB" font-size="10" font-weight="700">Xd</text>
-        <path d="M656 301l9 5v11l-9 5-9-5v-11l9-5Z" fill="#241331" stroke="#A64CC9" />
-        <text x="650" y="314" fill="#D28CEB" font-size="9" font-weight="700">JS</text>
-        <path d="M608 329c-7 4-7 10 0 14m7-14c7 4 7 10 0 14" fill="none" stroke="#C45BDB" stroke-width="1.5" />
-      </svg>
-
-      <div class="about-orbit-core absolute left-1/2 top-[68%] grid size-36 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-cyan/25 sm:top-[56%] sm:size-44">
-        <svg class="size-36 text-white drop-shadow-[0_0_1rem_rgba(12,255,255,0.8)]" viewBox="0 0 64 64" fill="none">
-          <path d="M15 12H49L29 32L49 52H15" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
+    <div class="flex flex-col gap-10 lg:col-span-7 lg:col-start-6">
+      <div class="type-h3 space-y-5">
+        <p>I’m a front-end developer focused on accessible, high-performance interfaces with React and modern CSS.</p>
+        <p class="text-ink-muted">
+          Before software, I worked in healthcare — it shaped how I work today: methodically, with the person on the other
+          end of the screen always in mind.
+        </p>
       </div>
+
+      <div>
+        <p class="border-b border-ink pb-2 text-base font-medium">Stack</p>
+        <ul class="mt-4 flex flex-wrap gap-2" aria-label="Technologies I work with">
+          {profile.stack.map((item) => <li class="tag">{item}</li>)}
+        </ul>
+      </div>
+
+      <a href={profile.resumePath} class="btn btn-secondary self-start">
+        Read the full resume <span aria-hidden="true">→</span>
+      </a>
     </div>
   </div>
 </section>

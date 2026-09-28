@@ -1,0 +1,134 @@
+---
+interface Props {
+  radius?: number;
+  intensity?: number;
+  grainScale?: number;
+  /** Tailwind text-color class; the grain is drawn in this color. */
+  colorClass?: string;
+  class?: string;
+}
+
+const { radius = 280, intensity = 0.35, grainScale = 1.5, colorClass = 'text-accent', class: className } = Astro.props;
+---
+
+<canvas
+  data-grain-spotlight
+  data-radius={radius}
+  data-intensity={intensity}
+  data-grain-scale={grainScale}
+  aria-hidden="true"
+  class:list={['pointer-events-none absolute inset-0 size-full', colorClass, className]}
+></canvas>
+
+<script>
+  import { readElementColor, type Rgb } from '@/lib/color';
+
+  const NOISE_FRAMES = 6;
+  const NOISE_FRAME_MS = 90;
+  const NOISE_TILE = 256;
+
+  const interactive =
+    window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const createNoisePatterns = (context: CanvasRenderingContext2D, grain: Rgb, scale: number): CanvasPattern[] =>
+    Array.from({ length: NOISE_FRAMES }, () => {
+      const tile = document.createElement('canvas');
+      tile.width = NOISE_TILE;
+      tile.height = NOISE_TILE;
+      const tileContext = tile.getContext('2d');
+      if (!tileContext) return null;
+      const image = tileContext.createImageData(NOISE_TILE, NOISE_TILE);
+      for (let i = 0; i < image.data.length; i += 4) {
+        if (Math.random() >= 0.3) continue;
+        const lift = Math.random() > 0.5 ? 0 : 180;
+        image.data[i] = Math.min(255, grain.r + lift);
+        image.data[i + 1] = Math.min(255, grain.g + lift);
+        image.data[i + 2] = Math.min(255, grain.b + lift);
+        image.data[i + 3] = Math.random() * 100 + 30;
+      }
+      tileContext.putImageData(image, 0, 0);
+      const pattern = context.createPattern(tile, 'repeat');
+      pattern?.setTransform(new DOMMatrix().scaleSelf(scale, scale));
+      return pattern;
+    }).filter((pattern): pattern is CanvasPattern => pattern !== null);
+
+  if (interactive) {
+    document.querySelectorAll<HTMLCanvasElement>('[data-grain-spotlight]').forEach((canvas) => {
+      const context = canvas.getContext('2d');
+      if (!context) return;
+
+      const radius = Number(canvas.dataset.radius);
+      const intensity = Number(canvas.dataset.intensity);
+      const patterns = createNoisePatterns(context, readElementColor(canvas), Number(canvas.dataset.grainScale));
+      if (patterns.length === 0) return;
+
+      const pointer = { x: 0, y: 0, inside: false };
+      let width = 0;
+      let height = 0;
+      let frameId = 0;
+      let noiseFrame = 0;
+      let lastSwap = 0;
+
+      const layout = () => {
+        const ratio = window.devicePixelRatio || 1;
+        width = canvas.offsetWidth;
+        height = canvas.offsetHeight;
+        canvas.width = Math.round(width * ratio);
+        canvas.height = Math.round(height * ratio);
+        context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      };
+
+      const render = (time: number) => {
+        frameId = 0;
+        context.clearRect(0, 0, width, height);
+        if (!pointer.inside) return;
+
+        if (time - lastSwap > NOISE_FRAME_MS) {
+          noiseFrame = (noiseFrame + 1) % patterns.length;
+          lastSwap = time;
+        }
+
+        const { x, y } = pointer;
+        const size = radius * 2;
+        context.save();
+        context.beginPath();
+        context.arc(x, y, radius, 0, Math.PI * 2);
+        context.clip();
+        context.globalAlpha = intensity;
+        context.fillStyle = patterns[noiseFrame] ?? patterns[0];
+        context.fillRect(x - radius, y - radius, size, size);
+        context.restore();
+
+        const feather = context.createRadialGradient(x, y, 0, x, y, radius);
+        feather.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        feather.addColorStop(0.4, 'rgba(0, 0, 0, 0.15)');
+        feather.addColorStop(0.75, 'rgba(0, 0, 0, 0.7)');
+        feather.addColorStop(1, 'rgba(0, 0, 0, 1)');
+        context.save();
+        context.globalCompositeOperation = 'destination-out';
+        context.fillStyle = feather;
+        context.fillRect(x - radius, y - radius, size, size);
+        context.restore();
+
+        frameId = requestAnimationFrame(render);
+      };
+
+      const onPointerMove = (event: PointerEvent) => {
+        if (event.pointerType === 'touch') return;
+        const bounds = canvas.getBoundingClientRect();
+        pointer.x = event.clientX - bounds.left;
+        pointer.y = event.clientY - bounds.top;
+        pointer.inside = pointer.x >= 0 && pointer.x <= bounds.width && pointer.y >= 0 && pointer.y <= bounds.height;
+        if (pointer.inside && !frameId && !document.hidden) frameId = requestAnimationFrame(render);
+      };
+
+      const onPointerLeave = () => {
+        pointer.inside = false;
+      };
+
+      new ResizeObserver(layout).observe(canvas);
+      window.addEventListener('pointermove', onPointerMove, { passive: true });
+      document.documentElement.addEventListener('pointerleave', onPointerLeave);
+    });
+  }
+</script>

@@ -1,30 +1,45 @@
 ---
+import DotGrid from '@/components/ui/DotGrid.astro';
+import { profile } from '@/data/profile';
+
+const year = String(new Date().getFullYear()).slice(-2);
 ---
 
-<section class="hero-panel relative isolate flex min-h-[42rem] items-center overflow-hidden rounded-t-[1.5rem] px-6 pb-10 pt-28 sm:px-10 md:px-14 md:pt-16 lg:px-16 min-[900px]:min-h-[100svh] min-[900px]:pb-0" id="home">
-  <div class="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-8 min-[900px]:grid-cols-[1.05fr_0.95fr] min-[900px]:gap-4">
-    <div class="reveal relative z-20 max-w-[38rem] py-10 min-[900px]:translate-y-4" data-reveal>
-      <h1 class="font-display text-[3.5rem] font-bold leading-[0.98] tracking-[-0.045em] text-white sm:text-6xl md:text-[4.1rem] lg:text-[5.6rem]">
-        Hi, I’m Asif
-      </h1>
-      <p class="mt-1 w-fit font-display text-2xl font-semibold leading-tight text-gradient-role sm:text-3xl md:text-[2.25rem] lg:text-[2.6rem]">Front-End Developer.</p>
-      <p class="ds-copy mt-5 max-w-[34rem] text-sm leading-7 text-white/75 sm:text-base sm:leading-8">
-        I design and build fast, accessible interfaces with React and modern CSS — from marketing sites to
-        booking flows — focused on clean component architecture and pixel-level craft.
-      </p>
-      <a href="#contact" class="pill pill-solid mt-7 justify-center px-4 py-1.5 text-xs">
-        Contact
-      </a>
+<section id="home" aria-labelledby="hero-title" class="relative isolate overflow-hidden">
+  <DotGrid
+    spacing={20}
+    dotSize={3.5}
+    radius={200}
+    strength={50}
+    ease={0.12}
+    baseOpacity={0}
+    colorClass="text-signal"
+    class="-z-10"
+  />
+
+  <div class="container-page section pt-6">
+    <div class="type-label flex items-center justify-between gap-4 text-[0.6875rem]">
+      <span>Portfolio ’{year}</span>
+      {profile.availability.open && (
+        <span class="inline-flex items-center gap-2">
+          <span class="status-dot status-dot-accent" aria-hidden="true"></span>
+          {profile.availability.label}
+        </span>
+      )}
     </div>
 
-    <div class="reveal relative mx-auto flex h-full w-full max-w-[36rem] items-end justify-center min-[900px]:mx-0 min-[900px]:ml-auto" data-reveal>
-      <div aria-hidden="true" class="pointer-events-none absolute bottom-8 right-4 h-[72%] w-[72%] rounded-full bg-violet/20 blur-[5rem]" />
-      <img
-        src="/assets/images/profile-optimized.webp"
-        alt="Portrait of Asif Imran Khan"
-        fetchpriority="high"
-        class="relative z-10 max-h-[28rem] w-full object-contain object-bottom drop-shadow-[0_1.5rem_4rem_rgba(12,255,255,0.15)] min-[900px]:max-h-[86svh] min-[900px]:w-[120%] min-[900px]:max-w-none min-[900px]:translate-y-5"
-      />
+    <h1 id="hero-title" class="type-display mt-20 max-w-[11em] md:mt-28">
+      <span class="text-accent">Front-end development</span> for interfaces that feel obvious
+    </h1>
+
+    <div class="mt-14 flex flex-col gap-6 md:mt-16 md:flex-row md:items-start md:justify-between">
+      <p class="type-small max-w-[25rem]">
+        Front-end developer building accessible, high-performance websites with React, TypeScript, and modern CSS.
+        {profile.availability.open && ` ${profile.availability.detail}.`}
+      </p>
+      <a href="#contact" class="type-label group inline-flex items-center gap-1.5 text-[0.6875rem]">
+        Get in touch <span class="arrow" aria-hidden="true">↗</span>
+      </a>
     </div>
   </div>
 </section>

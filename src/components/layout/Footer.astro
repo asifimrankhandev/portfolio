@@ -1,31 +1,79 @@
 ---
+import { profile, socialProfiles } from '@/data/profile';
+
+const isHome = Astro.url.pathname === '/';
+const sectionHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
+
+const pages = [
+  { label: 'Home', href: '/' },
+  { label: 'Work', href: sectionHref('work') },
+  { label: 'About', href: sectionHref('about') },
+  { label: 'Resume', href: profile.resumePath },
+];
+
+const columnClass = 'sm:pr-6 lg:border-l lg:border-line lg:px-6 lg:first:border-l-0 lg:first:pl-0';
+const headingClass = 'type-label text-ink-muted';
+const linkClass = 'group inline-flex items-center gap-2 text-[0.9375rem] transition-colors hover:text-accent-strong';
 ---
 
-<footer class="py-12 bg-canvas border-t border-line">
-  <div class="container mx-auto px-6 max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6">
+<footer class="container-page pb-8">
+  <a
+    href={`mailto:${profile.email}`}
+    class="group grid items-center gap-4 border-y border-line py-8 md:grid-cols-[1fr_auto_1fr] md:py-10"
+  >
+    <span class="type-label text-[0.8125rem]">Write to me</span>
+    <span class="type-title break-all transition-colors group-hover:text-accent md:text-[clamp(2.5rem,4.2vw,3.5rem)]">
+      {profile.email}
+    </span>
+    <span class="hidden text-right md:block" aria-hidden="true"><span class="arrow">↗</span></span>
+  </a>
 
-    <p class="ds-eyebrow">&copy; {new Date().getFullYear()} Asif Imran Khan.</p>
-
-    <div class="flex items-center gap-8">
-      <a
-        href="https://github.com/techyaik"
-        aria-label="GitHub"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center gap-1 text-xs font-bold uppercase tracking-widest text-ink hover:opacity-70 transition-opacity"
-      >
-        GitHub <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-50" aria-hidden="true"></i>
-      </a>
-      <a
-        href="https://www.linkedin.com/in/asif-imran-khan-50b170218"
-        aria-label="LinkedIn"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center gap-1 text-xs font-bold uppercase tracking-widest text-ink hover:opacity-70 transition-opacity"
-      >
-        LinkedIn <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-50" aria-hidden="true"></i>
-      </a>
+  <div class="grid gap-y-10 py-14 sm:grid-cols-2 sm:gap-y-12 lg:grid-cols-4">
+    <div class={columnClass}>
+      <p class="text-[0.9375rem] font-medium">{profile.name}</p>
+      <p class="type-small mt-3 max-w-[16rem] text-ink-soft">
+        Front-end developer building accessible, high-performance websites with React, TypeScript, and modern CSS.
+      </p>
     </div>
 
+    <nav aria-labelledby="footer-pages" class={columnClass}>
+      <p id="footer-pages" class={headingClass}>Pages</p>
+      <ul class="mt-4 space-y-2.5">
+        {pages.map((page) => (
+          <li><a href={page.href} class={linkClass}>{page.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav aria-labelledby="footer-elsewhere" class={columnClass}>
+      <p id="footer-elsewhere" class={headingClass}>Elsewhere</p>
+      <ul class="mt-4 space-y-2.5">
+        {socialProfiles.map((social) => (
+          <li>
+            <a href={social.url} target="_blank" rel="noopener noreferrer" class={linkClass}>
+              {social.label} <span class="arrow text-sm" aria-hidden="true">↗</span>
+              <span class="sr-only">(opens in a new tab)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class={columnClass}>
+      <p class={headingClass}>Currently</p>
+      <ul class="mt-4 space-y-2.5 text-[0.9375rem]">
+        <li class="flex items-baseline gap-2.5">
+          <span class:list={['status-dot relative -top-0.5', !profile.availability.open && 'bg-ink-muted']} aria-hidden="true"></span>
+          <span>{profile.availability.open ? profile.availability.detail : 'Not taking new work right now'}</span>
+        </li>
+        <li class="pl-[0.9375rem] text-ink-soft">{profile.location.city}, {profile.location.country}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="type-label flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-ink pt-5 text-[0.6875rem]">
+    <p>© {new Date().getFullYear()} {profile.name}</p>
+    <p class="flex items-center gap-3">Based in {profile.location.country} <span aria-hidden="true">→</span> Working worldwide</p>
+    <p>Built with Astro</p>
   </div>
 </footer>

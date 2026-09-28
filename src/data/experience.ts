@@ -25,7 +25,7 @@ export const experienceData: ExperienceEntry[] = [
   },
   {
     role: 'Senior Executive Clinical',
-    company: 'SAGILITY INDIA PRIVATE LIMITED',
+    company: 'Sagility India Private Limited',
     date: '01/2023 — PRESENT',
     location: 'Bangalore, IN',
     achievements: [
@@ -36,7 +36,7 @@ export const experienceData: ExperienceEntry[] = [
   },
   {
     role: 'ER Nurse',
-    company: 'NEW JANAPRIYA SUPER SPECIALITY HOSPITAL',
+    company: 'New Janapriya Super Speciality Hospital',
     date: '10/2022 — 01/2023',
     location: 'India',
     achievements: [
