@@ -10,7 +10,6 @@ export interface Profile {
   email: string;
   location: { city: string; country: string; countryCode: string };
   availability: { open: boolean; label: string; detail: string };
-  resumePath: string;
   stack: string[];
 }
 
@@ -25,7 +24,6 @@ export const profile: Profile = {
     label: 'Open to work',
     detail: 'Open to new front-end roles and freelance projects',
   },
-  resumePath: '/resume',
   stack: ['React', 'Next.js', 'JavaScript', 'TypeScript', 'HTML', 'CSS', 'Tailwind CSS', 'PHP'],
 };
 

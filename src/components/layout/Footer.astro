@@ -8,10 +8,9 @@ const pages = [
   { label: 'Home', href: '/' },
   { label: 'Work', href: sectionHref('work') },
   { label: 'About', href: sectionHref('about') },
-  { label: 'Resume', href: profile.resumePath },
 ];
 
-const columnClass = 'sm:pr-6 lg:border-l lg:border-line lg:px-6 lg:first:border-l-0 lg:first:pl-0';
+const columnClass = 'sm:border-l sm:border-line sm:px-6 sm:first:border-l-0 sm:first:pl-0';
 const headingClass = 'type-label text-ink-muted';
 const linkClass = 'group inline-flex items-center gap-2 text-[0.9375rem] transition-colors hover:text-accent-strong';
 ---
@@ -28,14 +27,7 @@ const linkClass = 'group inline-flex items-center gap-2 text-[0.9375rem] transit
     <span class="hidden text-right md:block" aria-hidden="true"><span class="arrow">↗</span></span>
   </a>
 
-  <div class="grid gap-y-10 py-14 sm:grid-cols-2 sm:gap-y-12 lg:grid-cols-4">
-    <div class={columnClass}>
-      <p class="text-[0.9375rem] font-medium">{profile.name}</p>
-      <p class="type-small mt-3 max-w-[16rem] text-ink-soft">
-        Front-end developer building accessible, high-performance websites with React, TypeScript, and modern CSS.
-      </p>
-    </div>
-
+  <div class="grid gap-y-10 py-14 sm:grid-cols-3 sm:gap-y-0">
     <nav aria-labelledby="footer-pages" class={columnClass}>
       <p id="footer-pages" class={headingClass}>Pages</p>
       <ul class="mt-4 space-y-2.5">
