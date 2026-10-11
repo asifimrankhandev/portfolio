@@ -1,5 +1,5 @@
 {
-  "name": "asif-imran-khan-portfolio",
+  "name": "portfolio",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build",
+    "deploy:preview": "env -u WRANGLER_CI_MATCH_TAG npx wrangler versions upload",
     "preview": "astro preview",
     "lint": "oxlint",
     "check": "astro check"
