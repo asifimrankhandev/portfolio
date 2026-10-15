@@ -21,7 +21,7 @@ src/
   data/                 # typed content: profile, projects, services, process, experience
   layouts/              # BaseLayout.astro (head, SEO meta, fonts)
   lib/                  # framework-agnostic helpers (scroll reveal, color)
-  pages/                # file-based routes (index, resume, 404, robots.txt)
+  pages/                # file-based routes (index, 404, robots.txt)
   styles/               # global.css design tokens and primitives
 ```
 
