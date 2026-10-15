@@ -1,7 +1,6 @@
 ---
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import { experienceData } from '@/data/experience';
-import { profile } from '@/data/profile';
 ---
 
 <section id="experience" aria-labelledby="experience-heading" class="container-page section">
@@ -25,8 +24,4 @@ import { profile } from '@/data/profile';
       </li>
     ))}
   </ol>
-
-  <a href={profile.resumePath} class="btn btn-secondary mt-10">
-    Full resume <span aria-hidden="true">→</span>
-  </a>
 </section>

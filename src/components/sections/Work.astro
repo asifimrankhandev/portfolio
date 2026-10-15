@@ -47,7 +47,7 @@ const indexLabel = (n: number) => `P. ${String(n).padStart(2, '0')}`;
         alt=""
         widths={[640, 960, 1280, 1600]}
         sizes="(min-width: 1024px) 66vw, 100vw"
-        class="aspect-[4/3] w-full object-cover object-top transition-transform duration-700 ease-standard group-hover:scale-[1.02]"
+        class="aspect-[16/9] w-full object-cover object-center transition-transform duration-700 ease-standard group-hover:scale-[1.02]"
       />
     </a>
   </article>
@@ -87,14 +87,14 @@ const indexLabel = (n: number) => `P. ${String(n).padStart(2, '0')}`;
             alt=""
             widths={[480, 720, 960]}
             sizes="100vw"
-            class="aspect-[16/10] w-full object-cover object-top md:hidden"
+            class="aspect-[16/10] w-full object-cover object-center md:hidden"
           />
           <Image
             src={project.image}
             alt=""
             widths={[336, 672]}
             sizes="21rem"
-            class="pointer-events-none absolute -top-3 right-36 z-10 hidden aspect-[3/2] w-[21rem] scale-95 object-cover object-top opacity-0 transition duration-300 ease-standard group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100 md:block"
+            class="pointer-events-none absolute -top-3 right-36 z-10 hidden aspect-[3/2] w-[21rem] scale-95 object-cover object-center opacity-0 transition duration-300 ease-standard group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100 md:block"
           />
         </a>
       </li>
