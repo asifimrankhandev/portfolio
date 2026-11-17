@@ -3,6 +3,10 @@ import mapsArchitects from '@/assets/images/project-maps-architects.png';
 import aspireHotel from '@/assets/images/project-aspire-hotel-slider2.jpeg';
 import yumly from '@/assets/images/project-yumly-card.webp';
 import aaronHolmes from '@/assets/images/project-aaron-holmes.jpeg';
+import docease from '@/assets/images/project-docease.webp';
+import lifio from '@/assets/images/project-lifio.webp';
+import neonWidgets from '@/assets/images/project-neon-widgets.webp';
+import refundBeacon from '@/assets/images/project-refund-beacon.webp';
 
 export interface Project {
   id: number;
@@ -56,6 +60,46 @@ export const projectsData: Project[] = [
     category: 'Web Platform',
     link: 'https://aaron-holmes.com/design/index.php?page=home',
     image: aaronHolmes,
+  },
+  {
+    id: 5,
+    title: 'DocEase - PDF Reader & Scanner',
+    description:
+      'An all-in-one document app to read, edit, sign and scan PDFs, open DOC, XLS and PPT files, convert between formats, and pull text from photos, with every file kept on the device.',
+    tech: ['Android', 'PDF Tools', 'Document Scanner'],
+    category: 'Android App',
+    link: 'https://play.google.com/store/apps/details?id=app.idexa.docease',
+    image: docease,
+  },
+  {
+    id: 6,
+    title: 'Lifio - Habit & Mood Tracker',
+    description:
+      'A private, fully offline daily check-in app for habits, mood, water, sleep and notes, with streaks, rest days and mood calendars, and no account, ads or cloud.',
+    tech: ['Android', 'Habit Tracking', 'Privacy-first'],
+    category: 'Android App',
+    link: 'https://play.google.com/store/apps/details?id=com.lifio.app',
+    image: lifio,
+  },
+  {
+    id: 7,
+    title: 'Neon Widgets',
+    description:
+      'Big, bright, live home screen widgets for Android: countdowns to festivals and trips, weather, notes, photos, dates and to-dos you can tick straight from the widget, in bold neon colours.',
+    tech: ['Android', 'Home Screen Widgets', 'Customisation'],
+    category: 'Android App · Coming soon',
+    link: 'https://idexa.app/neon-widgets/',
+    image: neonWidgets,
+  },
+  {
+    id: 8,
+    title: 'Refund Beacon',
+    description:
+      'A private refund tracker that logs every return on one timeline, keeps receipts and retailer messages with each case, shows a clear next step, and drafts follow-ups when a refund runs late.',
+    tech: ['Android', 'Personal Finance', 'Privacy-first'],
+    category: 'Android App · Coming soon',
+    link: 'https://idexa.app/refund-beacon/',
+    image: refundBeacon,
   },
 ];
 
